@@ -1,5 +1,5 @@
 <template>
-  <el-card shadow="never" header="通知公告（系统公告模块）">
+  <el-card shadow="never" header="通知公告">
     <el-table v-loading="loading" :data="rows">
       <el-table-column label="标题" prop="noticeTitle" min-width="220"/>
       <el-table-column label="类型" prop="noticeType" width="100">
