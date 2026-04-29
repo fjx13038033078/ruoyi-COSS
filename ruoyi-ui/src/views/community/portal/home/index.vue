@@ -17,9 +17,12 @@
       </el-col>
       <el-col :span="8">
         <el-card shadow="hover" header="快捷入口">
-          <el-button type="primary" plain block style="width:100%;margin-bottom:8px" @click="$router.push('/portal/apply')">我要申报</el-button>
-          <el-button plain block style="width:100%;margin-bottom:8px" @click="$router.push('/portal/my-apply')">我的办件</el-button>
-          <el-button plain block style="width:100%" @click="$router.push('/portal/notice')">通知公告</el-button>
+          <!-- flex 纵向 + stretch 对齐整列宽度；gap 取代各按钮手写 margin，避免垂直不齐 -->
+          <div class="shortcut-btns">
+            <el-button type="primary" plain class="shortcut-btn" @click="$router.push('/portal/apply')">我要申报</el-button>
+            <el-button plain class="shortcut-btn" @click="$router.push('/portal/my-apply')">我的办件</el-button>
+            <el-button plain class="shortcut-btn" @click="$router.push('/portal/notice')">通知公告</el-button>
+          </div>
         </el-card>
       </el-col>
     </el-row>
@@ -51,4 +54,18 @@ export default {
 <style scoped>
 .mb16 { margin-bottom: 16px; }
 .mb12 { margin-bottom: 12px; }
+.shortcut-btns {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+/* Element 按钮默认可能有 margin-left/+last 等，统一拉满宽度并清零侧向 margin，保证三块左缘右缘对齐 */
+.shortcut-btns .shortcut-btn {
+  width: 100%;
+  margin: 0;
+}
+.shortcut-btns .shortcut-btn + .shortcut-btn {
+  margin-left: 0;
+}
 </style>

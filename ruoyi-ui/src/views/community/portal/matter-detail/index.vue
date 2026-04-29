@@ -2,11 +2,14 @@
   <el-card v-loading="loading" shadow="never">
     <div v-if="detail">
       <h2>{{ detail.matterName }}</h2>
-      <p style="margin-top:8px">
-        <dict-tag :options="dict.type.comm_matter_category" :value="detail.category"/>
-        <dict-tag style="margin-left:8px" :options="dict.type.comm_matter_priority" :value="detail.priority"/>
-        <span style="margin-left:12px;color:#909399">承诺 {{ detail.expectDays }} 个工作日办结</span>
-      </p>
+      <!-- 勿用 p 包裹 DictTag：组件根节点为 div，放在 p 内会引发 DOM 错乱与样式堆叠 -->
+      <div class="matter-meta-row">
+        <div class="matter-tags">
+          <dict-tag :options="dict.type.comm_matter_category" :value="detail.category"/>
+          <dict-tag :options="dict.type.comm_matter_priority" :value="detail.priority"/>
+        </div>
+        <span class="sla-text">承诺 {{ detail.expectDays }} 个工作日办结</span>
+      </div>
       <el-divider />
       <h4>所需材料</h4>
       <pre class="doc-block">{{ detail.requiredDocs }}</pre>
@@ -50,6 +53,26 @@ export default {
 </script>
 
 <style scoped>
+.matter-meta-row {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+}
+.matter-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+/* DictTag 根为 div（块级）；在 flex 子项中并排，避免纵向堆叠错乱 */
+.matter-tags > div {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.sla-text { color: #909399; font-size: 14px; flex: 0 1 auto; min-width: 0; line-height: 1.6; }
 .doc-block { white-space: pre-wrap; font-family: inherit; padding: 12px; background: #f9fafc; border-radius: 4px; margin: 8px 0 16px; }
 .html-block { line-height: 1.65; margin-top: 8px; margin-bottom: 16px; }
 </style>
