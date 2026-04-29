@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  CommVisitAppointmentMapper.xml
+  表：comm_visit_appointment — 上门预约
+  状态约定：0 待接单、1 办理中、2 已完成；初次插入 status 固定写入 '0'
+-->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.community.mapper.CommVisitAppointmentMapper">
@@ -19,6 +24,7 @@
         <result property="finishTime" column="finish_time"/>
     </resultMap>
 
+    <!-- id="selectByVisitId" -->
     <select id="selectByVisitId" resultMap="VisitResult">
         select visit_id, applicant_id, applicant_name, phone, address, matter_desc, expected_time,
                status, handler_id, handler_name, summary, create_time, finish_time
@@ -26,6 +32,7 @@
         where visit_id = #{visitId}
     </select>
 
+    <!-- id="selectVisitList" : 工作台；可选状态 / 联系人模糊 -->
     <select id="selectVisitList" resultMap="VisitResult">
         select visit_id, applicant_id, applicant_name, phone, address, matter_desc, expected_time,
                status, handler_id, handler_name, summary, create_time, finish_time
@@ -41,6 +48,7 @@
         order by create_time desc
     </select>
 
+    <!-- id="selectMyVisits" : 门户「我的」按 applicant_id -->
     <select id="selectMyVisits" resultMap="VisitResult">
         select visit_id, applicant_id, applicant_name, phone, address, matter_desc, expected_time,
                status, handler_id, handler_name, summary, create_time, finish_time
@@ -49,6 +57,7 @@
         order by create_time desc
     </select>
 
+    <!-- id="insertVisit" : status 写死 '0' 待接单，回填 visit_id -->
     <insert id="insertVisit" parameterType="CommVisitAppointment" useGeneratedKeys="true" keyProperty="visitId">
         insert into comm_visit_appointment (
             applicant_id, applicant_name, phone, address, matter_desc,
@@ -58,6 +67,7 @@
                    #{expectedTime}, '0', sysdate())
     </insert>
 
+    <!-- id="updateVisit" : 接单/办结动态片段 -->
     <update id="updateVisit" parameterType="CommVisitAppointment">
         update comm_visit_appointment
         <set>

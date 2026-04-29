@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  CommApplyMapper.xml
+  表：comm_apply — 居民申办（联查 comm_matter 带出事项名称）
+  附带：工作台列表、门户我的办件、流水号前缀计数、看板分组统计
+-->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.community.mapper.CommApplyMapper">
@@ -26,6 +31,7 @@
         <result property="updateTime" column="update_time"/>
     </resultMap>
 
+    <!-- apply 与 matter 左联片段：列表 / 详情复用 -->
     <sql id="applyJoinMatter">
         select a.apply_id,
                a.apply_no,
@@ -51,11 +57,13 @@
                  left join comm_matter m on a.matter_id = m.matter_id
     </sql>
 
+    <!-- id="selectCommApplyById" -->
     <select id="selectCommApplyById" resultMap="CommApplyResult">
         <include refid="applyJoinMatter"/>
         where a.apply_id = #{applyId}
     </select>
 
+    <!-- id="selectCommApplyList" : 管理端工作台；可申请区间 params.begin/end -->
     <select id="selectCommApplyList" resultMap="CommApplyResult">
         <include refid="applyJoinMatter"/>
         <where>
@@ -84,18 +92,21 @@
         order by a.create_time desc
     </select>
 
+    <!-- id="selectMyApplyList" : 门户「我的办件」，仅本人 -->
     <select id="selectMyApplyList" resultMap="CommApplyResult">
         <include refid="applyJoinMatter"/>
         where a.applicant_id = #{applicantId}
         order by a.create_time desc
     </select>
 
+    <!-- id="countApplyNoLike" : 流水号前缀下已有数量，生成新编号用 -->
     <select id="countApplyNoLike" resultType="int">
         select count(1)
         from comm_apply
         where apply_no like concat(#{prefix}, '%')
     </select>
 
+    <!-- id="insertCommApply" : 初次申报插入；回填 applyId -->
     <insert id="insertCommApply" parameterType="CommApply" useGeneratedKeys="true" keyProperty="applyId">
         insert into comm_apply (apply_no, matter_id, applicant_id, applicant_name, id_card, phone, apply_remark,
                                 status,
@@ -105,6 +116,7 @@
                 sysdate(), sysdate())
     </insert>
 
+    <!-- id="updateCommApply" : 驳回 / 受理 / 办结等全流程 -->
     <update id="updateCommApply" parameterType="CommApply">
         update comm_apply
         <set>
@@ -127,6 +139,7 @@
         where apply_id = #{applyId}
     </update>
 
+    <!-- id="countApplyGroupByMatter" : 看板柱状图，按事项名聚合申办量，降序 TOP limit -->
     <select id="countApplyGroupByMatter" resultType="java.util.HashMap">
         select m.matter_name as label,
                count(*)       as value

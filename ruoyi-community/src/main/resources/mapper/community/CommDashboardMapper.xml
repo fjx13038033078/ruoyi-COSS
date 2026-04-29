@@ -1,20 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  CommDashboardMapper.xml
+  聚合统计（无单独表）；数据主要来自 comm_apply
+  KPI：总量、当日新增（Java 传入当日零点）、队列中耗时、办结平均分钟、评价均分在 EvaluationMapper
+  SQL 假定 MySQL；avgMinutes 使用 TIMESTAMPDIFF；
+  dailyNewApplyTrend：近 days 个日历日新建条数分组（缺口日期由前端仍可显示为 0 或仅展示有数据的日）
+-->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.community.mapper.CommDashboardMapper">
 
+    <!-- id="countAllApply" : KPI 申办总笔数 -->
     <select id="countAllApply" resultType="int">
         select count(1) from comm_apply
     </select>
 
+    <!-- id="countApplyCreatedAfter" : 今日新增传入 beginOfDay 作为下限 -->
     <select id="countApplyCreatedAfter" resultType="int">
         select count(1) from comm_apply where create_time &gt;= #{from}
     </select>
 
+    <!-- id="countPendingApply" : 仍为待签收或办理中（与业务枚举一致） -->
     <select id="countPendingApply" resultType="int">
         select count(1) from comm_apply where status in ('0', '2')
     </select>
 
+    <!-- id="avgMinutesFromCreateToFinish" : 已办结办结件平均办结耗时（分钟） -->
     <select id="avgMinutesFromCreateToFinish" resultType="double">
         select round(
                        avg(TIMESTAMPDIFF(MINUTE, create_time, finish_time)),
@@ -26,6 +37,9 @@
           and create_time is not null
     </select>
 
+    <!-- id="dailyNewApplyTrend"
+         近 days 天内按「创建日」汇总每日新建条数；
+         interval (days - 1) day 包含今天共 days 天窗口 -->
     <select id="dailyNewApplyTrend" resultType="java.util.HashMap">
         select date_format(create_time, '%Y-%m-%d') as dt,
                count(1)                           as cnt

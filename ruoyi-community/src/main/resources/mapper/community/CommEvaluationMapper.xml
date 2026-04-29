@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  CommEvaluationMapper.xml
+  表：comm_evaluation — 办结后对办件评价（一案至多一条）
+  联：comm_apply、comm_matter — 列表展示事项名称、办件编号
+-->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.community.mapper.CommEvaluationMapper">
@@ -15,6 +20,7 @@
         <result property="applyNo" column="apply_no"/>
     </resultMap>
 
+    <!-- id="selectByApplyId" : 判断是否已评价（单行最小列） -->
     <select id="selectByApplyId" resultMap="EvalResult">
         select e.evaluation_id,
                e.apply_id,
@@ -27,6 +33,7 @@
         where e.apply_id = #{applyId}
     </select>
 
+    <!-- id="selectEvaluationList" : 管理端评价分页列表 -->
     <select id="selectEvaluationList" resultMap="EvalResult">
         select e.evaluation_id,
                e.apply_id,
@@ -51,11 +58,13 @@
         order by e.create_time desc
     </select>
 
+    <!-- id="insertEvaluation" -->
     <insert id="insertEvaluation" parameterType="CommEvaluation" useGeneratedKeys="true" keyProperty="evaluationId">
         insert into comm_evaluation (apply_id, applicant_id, score, evaluation_level, content, create_time)
         values (#{applyId}, #{applicantId}, #{score}, #{evaluationLevel}, #{content}, sysdate())
     </insert>
 
+    <!-- id="selectAvgScore" : KPI 平均分，若无记录返回 NULL -->
     <select id="selectAvgScore" resultType="double">
         select round(avg(score), 2)
         from comm_evaluation

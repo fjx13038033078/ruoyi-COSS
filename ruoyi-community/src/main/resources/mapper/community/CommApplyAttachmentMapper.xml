@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  CommApplyAttachmentMapper.xml
+  表：comm_apply_attachment — 每条申办可有多个附件
+  列表：portal 申办详情下拉展示；重提前先 delete 再 insert
+-->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.community.mapper.CommApplyAttachmentMapper">
@@ -11,6 +16,7 @@
         <result property="uploadTime" column="upload_time"/>
     </resultMap>
 
+    <!-- id="selectByApplyId" : 指定办件下全部附件，按 id 升序 -->
     <select id="selectByApplyId" resultMap="AttachResult">
         select id, apply_id, file_name, file_url, upload_time
         from comm_apply_attachment
@@ -18,11 +24,13 @@
         order by id
     </select>
 
+    <!-- id="insertAttachment" -->
     <insert id="insertAttachment" parameterType="CommApplyAttachment" useGeneratedKeys="true" keyProperty="id">
         insert into comm_apply_attachment (apply_id, file_name, file_url, upload_time)
         values (#{applyId}, #{fileName}, #{fileUrl}, sysdate())
     </insert>
 
+    <!-- id="deleteByApplyId" : 重提清空旧附件 -->
     <delete id="deleteByApplyId">
         delete from comm_apply_attachment where apply_id = #{applyId}
     </delete>

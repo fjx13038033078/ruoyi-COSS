@@ -1,5 +1,6 @@
 <template>
-  <div class="app-container">
+  <!-- 数据看板：KPI 来自 raw.kpi；柱图 matterHot；折线 dailyTrend。接口见 api/community/dashboard -->
+  <div class="app-container community-dashboard">
     <el-row :gutter="16" class="panel-row">
       <el-col v-for="card in kpiCards" :key="card.key" :xs="24" :sm="12" :md="8" class="mb16">
         <el-card shadow="hover" :body-style="{ padding: '14px' }">
@@ -10,7 +11,7 @@
     </el-row>
     <el-row :gutter="16">
       <el-col :xs="24" :lg="12">
-        <el-card shadow="never" header="各事项申办量（居前）"><div ref="chartHot" class="chart-box"/></el-card>
+        <el-card shadow="never" header="各事项申办量排名"><div ref="chartHot" class="chart-box"/></el-card>
       </el-col>
       <el-col :xs="24" :lg="12">
         <el-card shadow="never" header="每日新增申办量（近期）"><div ref="chartTrend" class="chart-box"/></el-card>
@@ -20,6 +21,15 @@
 </template>
 
 <script>
+/**
+ * 社区一网通办 - 数据决策看板
+ *
+ * - 数据源：dashboardStatistics(params)，返回 data.kpi、data.matterHot、data.dailyTrend
+ * - matterHot: [{ label: 事项名, value: 件数 }] 已在服务端排序并截取条数
+ * - dailyTrend: [{ dt: 'yyyy-MM-dd', cnt: 件数 }] 按日历日分组
+ *
+ * ECharts：mounted + nextTick 后 init；beforeDestroy dispose；监听 window resize 同步尺寸
+ */
 import * as echarts from 'echarts'
 import { dashboardStatistics } from '@/api/community/dashboard'
 
@@ -32,12 +42,13 @@ export default {
     }
   },
   computed: {
+    /** KPI：card.key 与后端 kpi Map 字段名保持一致 */
     kpiCards() {
       return [
         { key: 'totalApply', title: '累计申办量' },
         { key: 'todayNew', title: '当日新增' },
         { key: 'pending', title: '待办/办理中' },
-        { key: 'avgScore', title: '平均满意度打分（1-5）' },
+        { key: 'avgScore', title: '平均满意度评分（1-5）' },
         { key: 'satisfactionPercent', title: '满意度折算（%）' },
         { key: 'avgHandleMinutes', title: '平均办理耗时（分钟）' }
       ]
@@ -59,19 +70,22 @@ export default {
     this.disposeCharts()
   },
   methods: {
+    /** 拉取看板统计数据 */
     load() {
       return dashboardStatistics({ matterHotLimit: 10, trendDays: 14 }).then(res => {
         this.raw = res.data || {}
       })
     },
+    /** 单列 KPI 格式化；办结耗时顺带展示服务端折算小时 */
     formatKpi(key) {
       const v = this.kpi[key]
       if (v === null || v === undefined) return '-'
       if (key === 'avgHandleMinutes' && this.kpi.avgHandleHours != null) {
-        return `${v}（折合 ${this.kpi.avgHandleHours} 小时）`
+        return `${v}（约 ${this.kpi.avgHandleHours} 小时）`
       }
       return v
     },
+    /** 柱状图 + 折线图 option；类目轴文案较长时柱状图倾斜显示 */
     initCharts() {
       this.disposeCharts()
       if (!this.$refs.chartHot || !this.$refs.chartTrend) return
