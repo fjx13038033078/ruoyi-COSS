@@ -1,9 +1,9 @@
 <template>
   <div class="register">
     <el-form ref="registerForm" :model="registerForm" :rules="registerRules" class="register-form">
-      <h3 class="title">社区一网通办系统</h3>
+      <h3 class="title">Community One-Stop Portal</h3>
       <el-form-item prop="username">
-        <el-input v-model="registerForm.username" type="text" auto-complete="off" placeholder="账号">
+        <el-input v-model="registerForm.username" type="text" auto-complete="off" placeholder="Username">
           <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
         </el-input>
       </el-form-item>
@@ -12,7 +12,7 @@
           v-model="registerForm.password"
           type="password"
           auto-complete="off"
-          placeholder="密码"
+          placeholder="Password"
           @keyup.enter.native="handleRegister"
         >
           <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
@@ -23,7 +23,7 @@
           v-model="registerForm.confirmPassword"
           type="password"
           auto-complete="off"
-          placeholder="确认密码"
+          placeholder="Confirm password"
           @keyup.enter.native="handleRegister"
         >
           <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
@@ -33,7 +33,7 @@
         <el-input
           v-model="registerForm.code"
           auto-complete="off"
-          placeholder="验证码"
+          placeholder="Captcha"
           style="width: 63%"
           @keyup.enter.native="handleRegister"
         >
@@ -51,18 +51,15 @@
           style="width:100%;"
           @click.native.prevent="handleRegister"
         >
-          <span v-if="!loading">注 册</span>
-          <span v-else>注 册 中...</span>
+          <span v-if="!loading">Register</span>
+          <span v-else>Registering...</span>
         </el-button>
         <div style="float: right;">
-          <router-link class="link-type" :to="'/login'">使用已有账户登录</router-link>
+          <router-link class="link-type" :to="'/login'">Back to sign in</router-link>
         </div>
       </el-form-item>
     </el-form>
-    <!--  底部  -->
-    <!--    <div class="el-register-footer">-->
-    <!--      <span>Copyright © 2018-2023 ruoyi.vip All Rights Reserved.</span>-->
-    <!--    </div>-->
+    <!-- Footer (optional) -->
   </div>
 </template>
 
@@ -74,7 +71,7 @@ export default {
   data() {
     const equalToPassword = (rule, value, callback) => {
       if (this.registerForm.password !== value) {
-        callback(new Error("两次输入的密码不一致"));
+        callback(new Error("Passwords do not match"));
       } else {
         callback();
       }
@@ -90,18 +87,18 @@ export default {
       },
       registerRules: {
         username: [
-          { required: true, trigger: "blur", message: "请输入您的账号" },
-          { min: 2, max: 20, message: '用户账号长度必须介于 2 和 20 之间', trigger: 'blur' }
+          { required: true, trigger: "blur", message: "Please enter username" },
+          { min: 2, max: 20, message: 'Username length must be 2 to 20 characters', trigger: 'blur' }
         ],
         password: [
-          { required: true, trigger: "blur", message: "请输入您的密码" },
-          { min: 5, max: 20, message: '用户密码长度必须介于 5 和 20 之间', trigger: 'blur' }
+          { required: true, trigger: "blur", message: "Please enter password" },
+          { min: 5, max: 20, message: 'Password length must be 5 to 20 characters', trigger: 'blur' }
         ],
         confirmPassword: [
-          { required: true, trigger: "blur", message: "请再次输入您的密码" },
+          { required: true, trigger: "blur", message: "Please confirm password" },
           { required: true, validator: equalToPassword, trigger: "blur" }
         ],
-        code: [{ required: true, trigger: "change", message: "请输入验证码" }]
+        code: [{ required: true, trigger: "change", message: "Please enter captcha" }]
       },
       loading: false,
       captchaEnabled: true
@@ -126,7 +123,7 @@ export default {
           this.loading = true;
           register(this.registerForm).then(res => {
             const username = this.registerForm.username;
-            this.$alert("<font color='red'>恭喜你，您的账号 " + username + " 注册成功！</font>", '系统提示', {
+            this.$alert("<font color='red'>Account " + username + " registered successfully.</font>", 'Notice', {
               dangerouslyUseHTMLString: true,
               type: 'success'
             }).then(() => {

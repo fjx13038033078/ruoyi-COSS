@@ -29,14 +29,13 @@ const permission = {
     },
   },
   actions: {
-    // 生成路由
     GenerateRoutes({ commit, rootGetters }) {
       return new Promise(resolve => {
         const roles = rootGetters.roles || []
         var portalFront = roles.indexOf('admin') === -1
           && roles.indexOf('community_staff') === -1
           && roles.indexOf('resident') !== -1
-        // 社区居民仅访问群众端，不向后端请求后台菜单路由
+        // Resident: portal only — skip fetching backend menu routers
         if (portalFront) {
           const asyncRoutes = filterDynamicRoutes(dynamicRoutes)
           router.addRoutes(asyncRoutes)
@@ -49,7 +48,6 @@ const permission = {
           resolve([nf])
           return
         }
-        // 向后端请求路由数据
         getRouters().then(res => {
           const sdata = JSON.parse(JSON.stringify(res.data))
           const rdata = JSON.parse(JSON.stringify(res.data))
@@ -69,14 +67,14 @@ const permission = {
   }
 }
 
-// 遍历后台传来的路由字符串，转换为组件对象
+/** Map API route JSON to vue-router components */
 function filterAsyncRouter(asyncRouterMap, lastRouter = false, type = false) {
   return asyncRouterMap.filter(route => {
     if (type && route.children) {
       route.children = filterChildren(route.children)
     }
     if (route.component) {
-      // Layout ParentView 组件特殊处理
+      /* Layout / ParentView / InnerLink resolved here */
       if (route.component === 'Layout') {
         route.component = Layout
       } else if (route.component === 'ParentView') {
@@ -125,7 +123,7 @@ function filterChildren(childrenMap, lastRouter = false) {
   return children
 }
 
-// 动态路由遍历，验证是否具备权限
+/** Filter declared dynamicRoutes by permission/role */
 export function filterDynamicRoutes(routes) {
   const res = []
   routes.forEach(route => {
@@ -146,7 +144,6 @@ export const loadView = (view) => {
   if (process.env.NODE_ENV === 'development') {
     return (resolve) => require([`@/views/${view}`], resolve)
   } else {
-    // 使用 import 实现生产环境的路由懒加载
     return () => import(`@/views/${view}`)
   }
 }

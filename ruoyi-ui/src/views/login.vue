@@ -1,13 +1,13 @@
 <template>
   <div class="login">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form">
-      <h3 class="title">社区一网通办系统</h3>
+      <h3 class="title">Community One-Stop Portal</h3>
       <el-form-item prop="username">
         <el-input
           v-model="loginForm.username"
           type="text"
           auto-complete="off"
-          placeholder="账号"
+          placeholder="Username"
         >
           <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
         </el-input>
@@ -17,7 +17,7 @@
           v-model="loginForm.password"
           type="password"
           auto-complete="off"
-          placeholder="密码"
+          placeholder="Password"
           @keyup.enter.native="handleLogin"
         >
           <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
@@ -27,7 +27,7 @@
         <el-input
           v-model="loginForm.code"
           auto-complete="off"
-          placeholder="验证码"
+          placeholder="Captcha"
           style="width: 63%"
           @keyup.enter.native="handleLogin"
         >
@@ -37,7 +37,7 @@
           <img :src="codeUrl" @click="getCode" class="login-code-img"/>
         </div>
       </el-form-item>
-      <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>
+      <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">Remember me</el-checkbox>
       <el-form-item style="width:100%;">
         <el-button
           :loading="loading"
@@ -46,18 +46,19 @@
           style="width:100%;"
           @click.native.prevent="handleLogin"
         >
-          <span v-if="!loading">登 录</span>
-          <span v-else>登 录 中...</span>
+          <span v-if="!loading">Sign in</span>
+          <span v-else>Signing in...</span>
         </el-button>
         <div style="float: right;" v-if="register">
-          <router-link class="link-type" :to="'/register'">立即注册</router-link>
+          <router-link class="link-type" :to="'/register'">Register</router-link>
         </div>
       </el-form-item>
     </el-form>
-    <!--  底部  -->
-<!--    <div class="el-login-footer">-->
-<!--      <span>Copyright © 2018-2023 ruoyi.vip All Rights Reserved.</span>-->
-<!--    </div>-->
+    <!-- Footer (optional)
+    <div class="el-login-footer">
+      <span>Copyright</span>
+    </div>
+    -->
   </div>
 </template>
 
@@ -80,17 +81,15 @@ export default {
       },
       loginRules: {
         username: [
-          { required: true, trigger: "blur", message: "请输入您的账号" }
+          { required: true, trigger: "blur", message: "Please enter username" }
         ],
         password: [
-          { required: true, trigger: "blur", message: "请输入您的密码" }
+          { required: true, trigger: "blur", message: "Please enter password" }
         ],
-        code: [{ required: true, trigger: "change", message: "请输入验证码" }]
+        code: [{ required: true, trigger: "change", message: "Please enter captcha" }]
       },
       loading: false,
-      // 验证码开关
       captchaEnabled: true,
-      // 注册开关
       register: false,
       redirect: undefined
     };
@@ -179,7 +178,7 @@ export default {
     height: 38px;
 
     .el-input__inner {
-      background-color: rgba(255, 255, 255, 0.5); /* 输入框的背景色透明度 */
+      background-color: rgba(255, 255, 255, 0.5); /* Input background transparency */
     }
 
     input {
@@ -189,8 +188,7 @@ export default {
 
   .el-button {
     background-color: rgba(76, 175, 80, 0.7);
-    //background-color: #4CAF50; /* 修改按钮背景色 */
-    color: white; /* 修改按钮文字颜色 */
+    color: white; /* Primary button label */
     border: none;
     border-radius: 4px;
     padding: 10px 20px;
@@ -200,15 +198,13 @@ export default {
 
   .el-button:hover {
     background-color: rgba(76, 175, 80, 0.9);
-    //background-color: #45a049; /* 按钮悬停时的背景色 */
   }
 
   .el-button:active {
     background-color: rgba(76, 175, 80, 0.4);
-    //background-color: #367c39; /* 按钮按下时的背景色 */
   }
 
-  /* 修改标题字体为楷体且加粗 */
+  /* Title font */
   .title {
     font-family: ssh;
     font-weight: bold;

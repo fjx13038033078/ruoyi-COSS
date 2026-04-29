@@ -1,18 +1,17 @@
 <template>
   <div>
     <div ref="echartsText" style="margin-top: 10px; height: 100px; display: flex; justify-content: center; align-items: center;">
-      <!-- 这里 ECharts 动画文本会被渲染 -->
+      <!-- ECharts animated title container -->
     </div>
     <div>
-      <!-- 通知公告 -->
       <el-row style="margin-top: 10px;">
         <el-col :span="12">
           <el-card style="margin-right: 20px; height: 420px;">
-            <h3 slot="header">通知公告</h3>
+            <h3 slot="header">Notices</h3>
             <el-table v-loading="loading" :data="noticeList">
-              <el-table-column label="序号" align="center" prop="noticeId" width="100"/>
+              <el-table-column label="No." align="center" prop="noticeId" width="100"/>
               <el-table-column
-                label="公告标题"
+                label="Title"
                 align="center"
                 prop="noticeTitle"
                 :show-overflow-tooltip="true"
@@ -21,12 +20,12 @@
                   <span @click="showNoticeContent(scope.row)">{{ scope.row.noticeTitle }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="公告类型" align="center" prop="noticeType" width="100">
+              <el-table-column label="Type" align="center" prop="noticeType" width="100">
                 <template slot-scope="scope">
                   <dict-tag :options="dict.type.sys_notice_type" :value="scope.row.noticeType"/>
                 </template>
               </el-table-column>
-              <el-table-column label="创建时间" align="center" prop="createTime" width="100">
+              <el-table-column label="Created" align="center" prop="createTime" width="100">
                 <template slot-scope="scope">
                   <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
                 </template>
@@ -36,7 +35,7 @@
         </el-col>
         <el-col :span="12">
           <el-card style="margin-right: 20px; height: 420px;">
-            <h3 slot="header">校外链接</h3>
+            <h3 slot="header">External links</h3>
             <el-carousel :interval="5000" arrow="always">
               <el-carousel-item>
                 <a href="https://www.baidu.com" target="_blank">
@@ -57,7 +56,6 @@
           </el-card>
         </el-col>
       </el-row>
-      <!-- 弹出的公告内容卡片 -->
       <el-dialog :title="selectedNotice.title" :visible.sync="showNoticeDialog" width="780px" append-to-body>
         <div slot="title" style="text-align: center;">{{ selectedNotice.title }}</div>
         <div v-html="selectedNotice.content" class="notice-content"></div>
@@ -75,27 +73,17 @@ export default {
   dicts: ['sys_notice_status', 'sys_notice_type'],
   data() {
     return {
-      // 遮罩层
       loading: true,
-      // 选中数组
       ids: [],
-      // 非单个禁用
       single: true,
-      // 非多个禁用
       multiple: true,
-      // 显示搜索条件
       showSearch: true,
-      // 总条数
       total: 0,
-      // 公告表格数据
       noticeList: [],
-      // 弹出层标题
       title: "",
-      // 是否显示弹出层
       open: false,
       failureRateByCourseData: {},
       averageScoreByCourseData: {},
-      // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
@@ -108,15 +96,13 @@ export default {
         content: ''
       },
       showNoticeDialog: false,
-      // 表单参数
       form: {},
-      // 表单校验
       rules: {
         noticeTitle: [
-          {required: true, message: "公告标题不能为空", trigger: "blur"}
+          {required: true, message: "Notice title is required", trigger: "blur"}
         ],
         noticeType: [
-          {required: true, message: "公告类型不能为空", trigger: "change"}
+          {required: true, message: "Notice type is required", trigger: "change"}
         ]
       }
     };
@@ -129,7 +115,6 @@ export default {
   },
   methods: {
     parseTime,
-    /** 查询公告列表 */
     getList() {
       this.loading = true;
       listNotice(this.queryParams).then(response => {
@@ -147,7 +132,6 @@ export default {
         this.loading = false;
       });
     },
-    // 初始化 ECharts 动画文本
     initEchartsText() {
       const chartDom = this.$refs.echartsText;
       const myChart = echarts.init(chartDom);
@@ -159,7 +143,7 @@ export default {
               left: 'center',
               top: 'center',
               style: {
-                text: '社区一网通办系统',
+                text: 'Community One-Stop Portal',
                 fontSize: 80,
                 fontWeight: 'bold',
                 lineDash: [0, 200],
