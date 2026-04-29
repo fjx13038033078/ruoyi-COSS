@@ -5,7 +5,6 @@ import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,7 @@ import com.ruoyi.community.mapper.CommEvaluationMapper;
 import com.ruoyi.community.service.ICommDashboardService;
 
 /**
- * 看板统计数据聚合
+ * Aggregate dashboard KPI, matter hotspots and daily application trends.
  */
 @Service
 public class CommDashboardServiceImpl implements ICommDashboardService

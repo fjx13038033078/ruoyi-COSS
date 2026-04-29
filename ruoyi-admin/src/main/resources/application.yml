@@ -123,11 +123,9 @@ swagger:
   # 请求前缀
   pathMapping: /dev-api
 
-# 防止XSS攻击
+# XSS filter (EscapeUtil sanitizes POST/PUT JSON/query; GET/DELETE bypass wrapper).
+# When urlPatterns includes /community/* and /portal/*, exclude APIs that submit HTML or rich user text inside JSON bodies.
 xss:
-  # 过滤开关
   enabled: true
-  # 排除链接（多个用逗号分隔）
-  excludes: /system/notice
-  # 匹配链接
-  urlPatterns: /system/*,/monitor/*,/tool/*
+  excludes: /system/notice,/community/matter,/community/apply/reject,/community/apply/accept,/community/apply/finish,/portal/apply,/portal/apply/resubmit/**,/portal/visit,/portal/evaluation
+  urlPatterns: /system/*,/monitor/*,/tool/*,/community/*,/portal/*

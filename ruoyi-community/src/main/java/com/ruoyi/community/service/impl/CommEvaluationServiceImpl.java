@@ -14,7 +14,7 @@ import com.ruoyi.community.mapper.CommEvaluationMapper;
 import com.ruoyi.community.service.ICommEvaluationService;
 
 /**
- * 评价业务实现（仅已办结可申请）
+ * Evaluation submit; only applicant on finished applications ({@code status=3}) may evaluate once.
  */
 @Service
 public class CommEvaluationServiceImpl implements ICommEvaluationService
@@ -38,20 +38,20 @@ public class CommEvaluationServiceImpl implements ICommEvaluationService
         CommEvaluation exist = evaluationMapper.selectByApplyId(ev.getApplyId());
         if (exist != null)
         {
-            throw new ServiceException("该办件已评价");
+            throw new ServiceException("This application was already evaluated");
         }
         CommApply apply = applyMapper.selectCommApplyById(ev.getApplyId());
         if (apply == null)
         {
-            throw new ServiceException("办件不存在");
+            throw new ServiceException("Application not found");
         }
         if (!userId.equals(apply.getApplicantId()))
         {
-            throw new ServiceException("无权限评价");
+            throw new ServiceException("Not allowed to evaluate this application");
         }
         if (!"3".equals(apply.getStatus()))
         {
-            throw new ServiceException("仅已办结可申请评价");
+            throw new ServiceException("Only finished applications may be evaluated");
         }
         ev.setApplicantId(userId);
         return evaluationMapper.insertEvaluation(ev);

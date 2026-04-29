@@ -13,7 +13,7 @@ import com.ruoyi.community.mapper.CommVisitAppointmentMapper;
 import com.ruoyi.community.service.ICommVisitAppointmentService;
 
 /**
- * 上门预约业务实现
+ * Doorstep visit booking: submit, staff accept, complete with summary.
  */
 @Service
 public class CommVisitAppointmentServiceImpl implements ICommVisitAppointmentService
@@ -51,11 +51,11 @@ public class CommVisitAppointmentServiceImpl implements ICommVisitAppointmentSer
         CommVisitAppointment v = visitMapper.selectByVisitId(visitId);
         if (v == null)
         {
-            throw new ServiceException("预约不存在");
+            throw new ServiceException("Visit booking not found");
         }
         if (!"0".equals(v.getStatus()))
         {
-            throw new ServiceException("当前状态不可接单");
+            throw new ServiceException("Current status does not allow accept");
         }
         v.setStatus("1");
         v.setHandlerId(handlerId);
@@ -69,11 +69,11 @@ public class CommVisitAppointmentServiceImpl implements ICommVisitAppointmentSer
         CommVisitAppointment v = visitMapper.selectByVisitId(visitId);
         if (v == null)
         {
-            throw new ServiceException("预约不存在");
+            throw new ServiceException("Visit booking not found");
         }
         if (!"1".equals(v.getStatus()))
         {
-            throw new ServiceException("请先接单后再完成");
+            throw new ServiceException("Accept this visit before completing");
         }
         Date now = DateUtils.getNowDate();
         v.setStatus("2");
