@@ -19,8 +19,7 @@ import com.ruoyi.community.service.ICommDashboardService;
  * 社区一网通数据看板：汇总 KPI、事项热度柱状图与日办件趋势线。
  */
 @Service
-public class CommDashboardServiceImpl implements ICommDashboardService
-{
+public class CommDashboardServiceImpl implements ICommDashboardService {
     @Autowired
     private CommDashboardMapper dashboardMapper;
 
@@ -30,10 +29,11 @@ public class CommDashboardServiceImpl implements ICommDashboardService
     @Autowired
     private CommEvaluationMapper evaluationMapper;
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Map<String, Object> loadStatistics(int matterHotLimit, int trendDays)
-    {
+    public Map<String, Object> loadStatistics(int matterHotLimit, int trendDays) {
         Map<String, Object> out = new HashMap<>();
         Calendar c = Calendar.getInstance();
         c.set(Calendar.HOUR_OF_DAY, 0);
@@ -48,8 +48,7 @@ public class CommDashboardServiceImpl implements ICommDashboardService
         Double avgMin = dashboardMapper.avgMinutesFromCreateToFinish();
         Double avgScore = evaluationMapper.selectAvgScore();
         Double satisfactionPct = null;
-        if (avgScore != null)
-        {
+        if (avgScore != null) {
             satisfactionPct = BigDecimal.valueOf(avgScore).multiply(BigDecimal.valueOf(20))
                     .setScale(2, RoundingMode.HALF_UP).doubleValue();
         }
@@ -59,8 +58,7 @@ public class CommDashboardServiceImpl implements ICommDashboardService
         kpi.put("todayNew", todayNew);
         kpi.put("pending", pending);
         kpi.put("avgHandleMinutes", avgMin);
-        if (avgMin != null)
-        {
+        if (avgMin != null) {
             kpi.put("avgHandleHours", BigDecimal.valueOf(avgMin).divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP).doubleValue());
         }
         kpi.put("avgScore", avgScore);

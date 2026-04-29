@@ -8,8 +8,7 @@ import com.ruoyi.community.domain.CommApplyAttachment;
 /**
  * 居民办件的提交、驳回、签收、办结及门户端自助查询。
  */
-public interface ICommApplyService
-{
+public interface ICommApplyService {
     /**
      * 按办件 ID 查询；可选加载附件列表。
      *
@@ -23,10 +22,14 @@ public interface ICommApplyService
      */
     CommApply selectCommApplyForResident(Long applyId, Long userId, boolean withAttachments);
 
-    /** 管理端工作台列表（条件分页） */
+    /**
+     * 管理端工作台列表（条件分页）
+     */
     List<CommApply> selectCommApplyList(CommApply query);
 
-    /** 居民：“我的办理”列表 */
+    /**
+     * 居民：“我的办理”列表
+     */
     List<CommApply> selectMyApplyList(Long applicantId);
 
     /**

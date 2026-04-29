@@ -10,8 +10,7 @@ import com.ruoyi.community.domain.CommMatter;
  * 表 {@code comm_matter}：社区可办事项的持久化。<br/>
  * 对应 Mapper XML：<code>mapper/community/CommMatterMapper.xml</code>。
  */
-public interface CommMatterMapper
-{
+public interface CommMatterMapper {
     /**
      * 按主键查询单条事项。
      *
@@ -25,10 +24,14 @@ public interface CommMatterMapper
      */
     List<CommMatter> selectCommMatterList(CommMatter query);
 
-    /** 插入一条事项。 */
+    /**
+     * 插入一条事项。
+     */
     int insertCommMatter(CommMatter matter);
 
-    /** 按主键更新（XML 中动态 SET）。 */
+    /**
+     * 按主键更新（XML 中动态 SET）。
+     */
     int updateCommMatter(CommMatter matter);
 
     /**

@@ -11,9 +11,10 @@ import org.apache.ibatis.annotations.Param;
  * 平均星级另见 {@link CommEvaluationMapper#selectAvgScore()}。<br/>
  * 对应 Mapper XML：<code>mapper/community/CommDashboardMapper.xml</code>。
  */
-public interface CommDashboardMapper
-{
-    /** 申办总件数。 */
+public interface CommDashboardMapper {
+    /**
+     * 申办总件数。
+     */
     int countAllApply();
 
     /**

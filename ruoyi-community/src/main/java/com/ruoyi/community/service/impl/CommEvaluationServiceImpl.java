@@ -17,42 +17,39 @@ import com.ruoyi.community.service.ICommEvaluationService;
  * 办件办结后居民评价；每条办件仅能评价一次，且必须为本人办结件。
  */
 @Service
-public class CommEvaluationServiceImpl implements ICommEvaluationService
-{
+public class CommEvaluationServiceImpl implements ICommEvaluationService {
     @Autowired
     private CommEvaluationMapper evaluationMapper;
 
     @Autowired
     private CommApplyMapper applyMapper;
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List<CommEvaluation> selectEvaluationList(CommEvaluation query)
-    {
+    public List<CommEvaluation> selectEvaluationList(CommEvaluation query) {
         return evaluationMapper.selectEvaluationList(query);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int submitEvaluation(CommEvaluation ev, Long userId)
-    {
+    public int submitEvaluation(CommEvaluation ev, Long userId) {
         CommEvaluation exist = evaluationMapper.selectByApplyId(ev.getApplyId());
-        if (exist != null)
-        {
+        if (exist != null) {
             throw new ServiceException("该办件已评价，不可重复提交");
         }
         CommApply apply = applyMapper.selectCommApplyById(ev.getApplyId());
-        if (apply == null)
-        {
+        if (apply == null) {
             throw new ServiceException("办件不存在");
         }
-        if (!userId.equals(apply.getApplicantId()))
-        {
+        if (!userId.equals(apply.getApplicantId())) {
             throw new ServiceException("仅本人可对本人办件进行评价");
         }
-        if (!"3".equals(apply.getStatus()))
-        {
+        if (!"3".equals(apply.getStatus())) {
             throw new ServiceException("仅办结后的办件可评价");
         }
         ev.setApplicantId(userId);

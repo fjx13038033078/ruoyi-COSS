@@ -8,12 +8,15 @@ import com.ruoyi.community.domain.CommApplyAttachment;
  * 表 {@code comm_apply_attachment}：申办材料附件。<br/>
  * 对应 Mapper XML：<code>mapper/community/CommApplyAttachmentMapper.xml</code>。
  */
-public interface CommApplyAttachmentMapper
-{
-    /** 按办件主键列出全部附件。 */
+public interface CommApplyAttachmentMapper {
+    /**
+     * 按办件主键列出全部附件。
+     */
     List<CommApplyAttachment> selectByApplyId(Long applyId);
 
-    /** 插入一条附件记录。 */
+    /**
+     * 插入一条附件记录。
+     */
     int insertAttachment(CommApplyAttachment row);
 
     /**

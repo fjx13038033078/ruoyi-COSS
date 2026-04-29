@@ -18,71 +18,108 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class CommApply extends BaseEntity
-{
+public class CommApply extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
-    /** 办件主键 ID */
+    /**
+     * 办件主键 ID
+     */
     private Long applyId;
 
-    /** 办件编号（系统生成） */
+    /**
+     * 办件编号（系统生成）
+     */
     private String applyNo;
 
-    /** 关联的事项 ID（comm_matter） */
+    /**
+     * 关联的事项 ID（comm_matter）
+     */
     @NotNull(message = "请选择办事事项")
     private Long matterId;
 
-    /** 事项名称冗余字段 */
+    /**
+     * 事项名称冗余字段
+     */
     private String matterName;
 
-    /** 申请人用户 ID（sys_user） */
+    /**
+     * 申请人用户 ID（sys_user）
+     */
     private Long applicantId;
 
-    /** 申请人姓名 */
+    /**
+     * 申请人姓名
+     */
     @NotBlank(message = "申请人姓名不能为空")
     private String applicantName;
 
-    /** 身份证号码 */
+    /**
+     * 身份证号码
+     */
     private String idCard;
 
-    /** 联系电话 */
+    /**
+     * 联系电话
+     */
     @NotBlank(message = "联系电话不能为空")
     private String phone;
 
-    /** 申请补充说明 */
+    /**
+     * 申请补充说明
+     */
     private String applyRemark;
 
-    /** 流程状态：0 待初审；1 已驳回；2 办理中；3 已办结 */
+    /**
+     * 流程状态：0 待初审；1 已驳回；2 办理中；3 已办结
+     */
     private String status;
 
-    /** 驳回原因 */
+    /**
+     * 驳回原因
+     */
 
     private String rejectReason;
 
-    /** 审核/办结意见 */
+    /**
+     * 审核/办结意见
+     */
     private String opinion;
 
-    /** 结果文书或附件路径（办结时填写） */
+    /**
+     * 结果文书或附件路径（办结时填写）
+     */
     private String resultFileUrl;
 
-    /** 经办人 ID */
+    /**
+     * 经办人 ID
+     */
     private Long handlerId;
 
-    /** 经办人姓名 */
+    /**
+     * 经办人姓名
+     */
     private String handlerName;
 
-    /** 签收/分配时间 */
+    /**
+     * 签收/分配时间
+     */
     private Date assignTime;
 
-    /** 最近一次处理时间 */
+    /**
+     * 最近一次处理时间
+     */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date handleTime;
 
-    /** 办结完成时间 */
+    /**
+     * 办结完成时间
+     */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date finishTime;
 
-    /** 申请材料附件列表（非表字段时使用） */
+    /**
+     * 申请材料附件列表（非表字段时使用）
+     */
     private List<CommApplyAttachment> attachmentList;
 
     /**
@@ -91,8 +128,7 @@ public class CommApply extends BaseEntity
      * @return 状态为驳回（1）时返回 true
      */
     @JsonIgnore
-    public boolean allowResubmit()
-    {
+    public boolean allowResubmit() {
         return "1".equals(status);
     }
 }

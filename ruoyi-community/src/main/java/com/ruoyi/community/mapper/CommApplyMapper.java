@@ -11,8 +11,7 @@ import com.ruoyi.community.domain.CommApply;
  * 表 {@code comm_apply}：居民申办记录；列表联查 {@code comm_matter} 带出事项名称。<br/>
  * 对应 Mapper XML：<code>mapper/community/CommApplyMapper.xml</code>。
  */
-public interface CommApplyMapper
-{
+public interface CommApplyMapper {
     /**
      * 单条申办详情（含事项名称）。附件需在 Service 层另调附件 Mapper。
      */
@@ -37,10 +36,14 @@ public interface CommApplyMapper
      */
     int countApplyNoLike(@Param("prefix") String prefix);
 
-    /** 插入申办记录，{@code applyId} 回写实体。 */
+    /**
+     * 插入申办记录，{@code applyId} 回写实体。
+     */
     int insertCommApply(CommApply apply);
 
-    /** 更新申办全流程字段（驳回、受理、办结等）。 */
+    /**
+     * 更新申办全流程字段（驳回、受理、办结等）。
+     */
     int updateCommApply(CommApply apply);
 
     /**

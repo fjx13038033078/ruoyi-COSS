@@ -8,8 +8,7 @@ import com.ruoyi.community.domain.CommEvaluation;
  * 表 {@code comm_evaluation}：办结后满意度评价（一案一条）。<br/>
  * 对应 Mapper XML：<code>mapper/community/CommEvaluationMapper.xml</code>。
  */
-public interface CommEvaluationMapper
-{
+public interface CommEvaluationMapper {
     /**
      * 按办件 ID 查询是否已有评价，用于防重复提交。
      */
@@ -20,7 +19,9 @@ public interface CommEvaluationMapper
      */
     List<CommEvaluation> selectEvaluationList(CommEvaluation query);
 
-    /** 插入评价，主键回填。 */
+    /**
+     * 插入评价，主键回填。
+     */
     int insertEvaluation(CommEvaluation row);
 
     /**

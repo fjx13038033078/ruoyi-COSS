@@ -9,9 +9,10 @@ import com.ruoyi.community.domain.CommVisitAppointment;
  * 状态：0 待接单、1 办理中、2 已完成。<br/>
  * 对应 Mapper XML：<code>mapper/community/CommVisitAppointmentMapper.xml</code>。
  */
-public interface CommVisitAppointmentMapper
-{
-    /** 按预约主键查询。 */
+public interface CommVisitAppointmentMapper {
+    /**
+     * 按预约主键查询。
+     */
     CommVisitAppointment selectByVisitId(Long visitId);
 
     /**
@@ -24,9 +25,13 @@ public interface CommVisitAppointmentMapper
      */
     List<CommVisitAppointment> selectMyVisits(Long applicantId);
 
-    /** 插入预约，默认 {@code status='0'}，主键回填。 */
+    /**
+     * 插入预约，默认 {@code status='0'}，主键回填。
+     */
     int insertVisit(CommVisitAppointment row);
 
-    /** 接单、办结时更新状态、经办人、摘要、完成时间等。 */
+    /**
+     * 接单、办结时更新状态、经办人、摘要、完成时间等。
+     */
     int updateVisit(CommVisitAppointment row);
 }

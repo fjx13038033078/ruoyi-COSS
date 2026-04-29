@@ -13,58 +13,61 @@ import com.ruoyi.community.service.ICommMatterService;
  * 事项维护与门户热门榜单。
  */
 @Service
-public class CommMatterServiceImpl implements ICommMatterService
-{
+public class CommMatterServiceImpl implements ICommMatterService {
     @Autowired
     private CommMatterMapper matterMapper;
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public CommMatter selectCommMatterById(Long matterId)
-    {
+    public CommMatter selectCommMatterById(Long matterId) {
         return matterMapper.selectCommMatterById(matterId);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List<CommMatter> selectCommMatterList(CommMatter matter)
-    {
+    public List<CommMatter> selectCommMatterList(CommMatter matter) {
         return matterMapper.selectCommMatterList(matter);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public int insertCommMatter(CommMatter matter)
-    {
-        if (matter.getPriority() == null)
-        {
+    public int insertCommMatter(CommMatter matter) {
+        if (matter.getPriority() == null) {
             matter.setPriority("normal");
         }
-        if (matter.getStatus() == null)
-        {
+        if (matter.getStatus() == null) {
             matter.setStatus("0");
         }
         return matterMapper.insertCommMatter(matter);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public int updateCommMatter(CommMatter matter)
-    {
+    public int updateCommMatter(CommMatter matter) {
         return matterMapper.updateCommMatter(matter);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public int deleteCommMatterByIds(Long[] matterIds)
-    {
+    public int deleteCommMatterByIds(Long[] matterIds) {
         return matterMapper.deleteCommMatterByIds(matterIds);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List<CommMatter> selectHotMatters(int limit)
-    {
+    public List<CommMatter> selectHotMatters(int limit) {
         return matterMapper.selectHotMatters(limit);
     }
 }

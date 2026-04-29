@@ -16,50 +16,52 @@ import com.ruoyi.community.service.ICommVisitAppointmentService;
  * 上门代办：居民发起预约、社工接单及线下办结记录摘要。
  */
 @Service
-public class CommVisitAppointmentServiceImpl implements ICommVisitAppointmentService
-{
+public class CommVisitAppointmentServiceImpl implements ICommVisitAppointmentService {
     @Autowired
     private CommVisitAppointmentMapper visitMapper;
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public CommVisitAppointment selectByVisitId(Long visitId)
-    {
+    public CommVisitAppointment selectByVisitId(Long visitId) {
         return visitMapper.selectByVisitId(visitId);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List<CommVisitAppointment> selectVisitList(CommVisitAppointment query)
-    {
+    public List<CommVisitAppointment> selectVisitList(CommVisitAppointment query) {
         return visitMapper.selectVisitList(query);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List<CommVisitAppointment> selectMyVisits(Long applicantId)
-    {
+    public List<CommVisitAppointment> selectMyVisits(Long applicantId) {
         return visitMapper.selectMyVisits(applicantId);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public int insertVisit(CommVisitAppointment row)
-    {
+    public int insertVisit(CommVisitAppointment row) {
         return visitMapper.insertVisit(row);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public int acceptVisit(Long visitId, Long handlerId, String handlerName)
-    {
+    public int acceptVisit(Long visitId, Long handlerId, String handlerName) {
         CommVisitAppointment v = visitMapper.selectByVisitId(visitId);
-        if (v == null)
-        {
+        if (v == null) {
             throw new ServiceException("预约不存在");
         }
-        if (!"0".equals(v.getStatus()))
-        {
+        if (!"0".equals(v.getStatus())) {
             throw new ServiceException("当前状态不可接单");
         }
         v.setStatus("1");
@@ -68,17 +70,16 @@ public class CommVisitAppointmentServiceImpl implements ICommVisitAppointmentSer
         return visitMapper.updateVisit(v);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public int completeVisit(Long visitId, String summary, Long handlerId, String handlerName)
-    {
+    public int completeVisit(Long visitId, String summary, Long handlerId, String handlerName) {
         CommVisitAppointment v = visitMapper.selectByVisitId(visitId);
-        if (v == null)
-        {
+        if (v == null) {
             throw new ServiceException("预约不存在");
         }
-        if (!"1".equals(v.getStatus()))
-        {
+        if (!"1".equals(v.getStatus())) {
             throw new ServiceException("请先接单后再办结");
         }
         Date now = DateUtils.getNowDate();
