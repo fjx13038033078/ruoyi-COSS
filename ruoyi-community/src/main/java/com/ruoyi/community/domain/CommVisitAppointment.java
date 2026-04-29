@@ -7,168 +7,55 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-/** comm_visit_appointment */
+import lombok.Data;
+
+/**
+ * 上门代办预约记录，对应表 {@code comm_visit_appointment}。
+ */
+@Data
 public class CommVisitAppointment
 {
+    /** 预约主键 */
     private Long visitId;
 
+    /** 预约人用户 ID */
     private Long applicantId;
 
+    /** 联系人姓名（后端可从登录账号填充） */
     private String applicantName;
 
+    /** 联系电话 */
     private String phone;
 
-    @NotBlank(message = "address required")
+    /** 上门地址 */
+    @NotBlank(message = "上门地址不能为空")
     private String address;
 
+    /** 事由或需求简述 */
     private String matterDesc;
 
-    @NotNull(message = "expectedTime required")
+    /** 期望上门时间 */
+    @NotNull(message = "期望上门时间不能为空")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date expectedTime;
 
-    /** 0 pending 1 accepted 2 done */
+    /** 状态：0 待接单；1 已接单办理中；2 已完成 */
     private String status;
 
+    /** 处理人 ID */
     private Long handlerId;
 
+    /** 处理人姓名 */
     private String handlerName;
 
+    /** 办结摘要说明 */
     private String summary;
 
+    /** 预约创建时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
+    /** 办结时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date finishTime;
-
-    public Long getVisitId()
-    {
-        return visitId;
-    }
-
-    public void setVisitId(Long visitId)
-    {
-        this.visitId = visitId;
-    }
-
-    public Long getApplicantId()
-    {
-        return applicantId;
-    }
-
-    public void setApplicantId(Long applicantId)
-    {
-        this.applicantId = applicantId;
-    }
-
-    public String getApplicantName()
-    {
-        return applicantName;
-    }
-
-    public void setApplicantName(String applicantName)
-    {
-        this.applicantName = applicantName;
-    }
-
-    public String getPhone()
-    {
-        return phone;
-    }
-
-    public void setPhone(String phone)
-    {
-        this.phone = phone;
-    }
-
-    public String getAddress()
-    {
-        return address;
-    }
-
-    public void setAddress(String address)
-    {
-        this.address = address;
-    }
-
-    public String getMatterDesc()
-    {
-        return matterDesc;
-    }
-
-    public void setMatterDesc(String matterDesc)
-    {
-        this.matterDesc = matterDesc;
-    }
-
-    public Date getExpectedTime()
-    {
-        return expectedTime;
-    }
-
-    public void setExpectedTime(Date expectedTime)
-    {
-        this.expectedTime = expectedTime;
-    }
-
-    public String getStatus()
-    {
-        return status;
-    }
-
-    public void setStatus(String status)
-    {
-        this.status = status;
-    }
-
-    public Long getHandlerId()
-    {
-        return handlerId;
-    }
-
-    public void setHandlerId(Long handlerId)
-    {
-        this.handlerId = handlerId;
-    }
-
-    public String getHandlerName()
-    {
-        return handlerName;
-    }
-
-    public void setHandlerName(String handlerName)
-    {
-        this.handlerName = handlerName;
-    }
-
-    public String getSummary()
-    {
-        return summary;
-    }
-
-    public void setSummary(String summary)
-    {
-        this.summary = summary;
-    }
-
-    public Date getCreateTime()
-    {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime)
-    {
-        this.createTime = createTime;
-    }
-
-    public Date getFinishTime()
-    {
-        return finishTime;
-    }
-
-    public void setFinishTime(Date finishTime)
-    {
-        this.finishTime = finishTime;
-    }
 }

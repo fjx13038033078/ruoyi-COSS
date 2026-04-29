@@ -5,12 +5,12 @@ import java.util.List;
 import com.ruoyi.community.domain.CommEvaluation;
 
 /**
- * 办件评价
+ * 鍔炰欢璇勪环
  */
 public interface ICommEvaluationService
 {
     List<CommEvaluation> selectEvaluationList(CommEvaluation query);
 
-    /** 居民提交评价（一案一评） */
+    /** 灞呮皯鎻愪氦璇勪环锛堜竴妗堜竴璇勶級 */
     int submitEvaluation(CommEvaluation ev, Long userId);
 }

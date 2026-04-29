@@ -5,16 +5,16 @@
       <p style="margin-top:8px">
         <dict-tag :options="dict.type.comm_matter_category" :value="detail.category"/>
         <dict-tag style="margin-left:8px" :options="dict.type.comm_matter_priority" :value="detail.priority"/>
-        <span style="margin-left:12px;color:#909399">{{ detail.expectDays }} working days (SLA)</span>
+        <span style="margin-left:12px;color:#909399">承诺 {{ detail.expectDays }} 个工作日办结</span>
       </p>
       <el-divider />
-      <h4>Required documents</h4>
+      <h4>所需材料</h4>
       <pre class="doc-block">{{ detail.requiredDocs }}</pre>
-      <h4>Process</h4>
+      <h4>办理流程</h4>
       <div class="html-block" v-html="detail.processDesc"/>
-      <el-button type="primary" style="margin-top:16px" @click="goApply">Apply now</el-button>
+      <el-button type="primary" style="margin-top:16px" @click="goApply">立即申报</el-button>
     </div>
-    <el-empty v-else-if="!loading" description="Unavailable or offline"/>
+    <el-empty v-else-if="!loading" description="事项不存在或未发布"/>
   </el-card>
 </template>
 

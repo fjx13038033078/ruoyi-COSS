@@ -1,24 +1,24 @@
 <template>
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" inline size="small">
-      <el-form-item label="Name"><el-input v-model="queryParams.matterName" clearable @keyup.enter.native="handleQuery"/></el-form-item>
-      <el-form-item label="Status"><el-select v-model="queryParams.status" placeholder="All" clearable><el-option v-for="d in dict.type.sys_normal_disable" :key="d.value" :label="d.label" :value="d.value"/></el-select></el-form-item>
-      <el-form-item><el-button type="primary" icon="el-icon-search" @click="handleQuery">Search</el-button><el-button icon="el-icon-refresh" @click="resetQuery">Reset</el-button></el-form-item>
+      <el-form-item label="事项名称"><el-input v-model="queryParams.matterName" clearable @keyup.enter.native="handleQuery"/></el-form-item>
+      <el-form-item label="状态"><el-select v-model="queryParams.status" placeholder="全部" clearable><el-option v-for="d in dict.type.sys_normal_disable" :key="d.value" :label="d.label" :value="d.value"/></el-select></el-form-item>
+      <el-form-item><el-button type="primary" icon="el-icon-search" @click="handleQuery">搜索</el-button><el-button icon="el-icon-refresh" @click="resetQuery">重置</el-button></el-form-item>
     </el-form>
     <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5"><el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd" v-hasPermi="['community:matter:add']">Add</el-button></el-col>
+      <el-col :span="1.5"><el-button type="primary" plain icon="el-icon-plus" size="mini" @click="handleAdd" v-hasPermi="['community:matter:add']">新增</el-button></el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
     <el-table v-loading="loading" :data="dataList">
-      <el-table-column label="#" align="center" width="55" type="index"/>
-      <el-table-column label="Name" prop="matterName" min-width="200" show-overflow-tooltip/>
-      <el-table-column label="Category" width="110"><template slot-scope="s"><dict-tag :options="dict.type.comm_matter_category" :value="s.row.category"/></template></el-table-column>
-      <el-table-column label="Status" width="90"><template slot-scope="s"><dict-tag :options="dict.type.sys_normal_disable" :value="s.row.status"/></template></el-table-column>
-      <el-table-column label="Created" align="center" prop="createTime" width="160"/>
-      <el-table-column label="Actions" align="center" width="170" fixed="right">
+      <el-table-column label="序号" align="center" width="55" type="index"/>
+      <el-table-column label="事项名称" prop="matterName" min-width="200" show-overflow-tooltip/>
+      <el-table-column label="分类" width="110"><template slot-scope="s"><dict-tag :options="dict.type.comm_matter_category" :value="s.row.category"/></template></el-table-column>
+      <el-table-column label="状态" width="90"><template slot-scope="s"><dict-tag :options="dict.type.sys_normal_disable" :value="s.row.status"/></template></el-table-column>
+      <el-table-column label="创建时间" align="center" prop="createTime" width="160"/>
+      <el-table-column label="操作" align="center" width="170" fixed="right">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['community:matter:edit']">Edit</el-button>
-          <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['community:matter:remove']">Delete</el-button>
+          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['community:matter:edit']">修改</el-button>
+          <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['community:matter:remove']">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -26,20 +26,20 @@
 
     <el-dialog :title="title" :visible.sync="open" width="720px" append-to-body destroy-on-close>
       <el-form ref="form" :model="form" :rules="rules" label-width="120px">
-        <el-form-item label="Name" prop="matterName"><el-input v-model="form.matterName"/></el-form-item>
+        <el-form-item label="事项名称" prop="matterName"><el-input v-model="form.matterName"/></el-form-item>
         <el-row>
-          <el-col :span="12"><el-form-item label="Category" prop="category"><el-select v-model="form.category" style="width:100%"><el-option v-for="d in dict.type.comm_matter_category" :key="d.value" :label="d.label" :value="d.value"/></el-select></el-form-item></el-col>
-          <el-col :span="12"><el-form-item label="Priority"><el-select v-model="form.priority" style="width:100%"><el-option v-for="d in dict.type.comm_matter_priority" :key="d.value" :label="d.label" :value="d.value"/></el-select></el-form-item></el-col>
+          <el-col :span="12"><el-form-item label="分类" prop="category"><el-select v-model="form.category" style="width:100%"><el-option v-for="d in dict.type.comm_matter_category" :key="d.value" :label="d.label" :value="d.value"/></el-select></el-form-item></el-col>
+          <el-col :span="12"><el-form-item label="缓急"><el-select v-model="form.priority" style="width:100%"><el-option v-for="d in dict.type.comm_matter_priority" :key="d.value" :label="d.label" :value="d.value"/></el-select></el-form-item></el-col>
         </el-row>
-        <el-form-item label="Dept" prop="deptId">
-          <treeselect v-model="form.deptId" :options="deptTree" :normalizer="deptNormalizer" :show-count="true" placeholder="Select dept"/>
+        <el-form-item label="责任部门" prop="deptId">
+          <treeselect v-model="form.deptId" :options="deptTree" :normalizer="deptNormalizer" :show-count="true" placeholder="请选择部门"/>
         </el-form-item>
-        <el-form-item label="Materials"><el-input v-model="form.requiredDocs" type="textarea" rows="3"/></el-form-item>
-        <el-form-item label="SLA (days)"><el-input-number v-model="form.expectDays" :min="1" controls-position="right"/></el-form-item>
-        <el-form-item label="Enable"><el-radio-group v-model="form.status"><el-radio v-for="d in dict.type.sys_normal_disable" :key="d.value" :label="d.value">{{d.label}}</el-radio></el-radio-group></el-form-item>
-        <el-form-item label="Workflow"><editor v-model="form.processDesc" :min-height="180"/></el-form-item>
+        <el-form-item label="所需材料"><el-input v-model="form.requiredDocs" type="textarea" rows="3"/></el-form-item>
+        <el-form-item label="承诺时限（天）"><el-input-number v-model="form.expectDays" :min="1" controls-position="right"/></el-form-item>
+        <el-form-item label="是否启用"><el-radio-group v-model="form.status"><el-radio v-for="d in dict.type.sys_normal_disable" :key="d.value" :label="d.value">{{d.label}}</el-radio></el-radio-group></el-form-item>
+        <el-form-item label="办事流程"><editor v-model="form.processDesc" :min-height="180"/></el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer"><el-button type="primary" @click="submitForm">OK</el-button><el-button @click="dlgCancel">Cancel</el-button></div>
+      <div slot="footer" class="dialog-footer"><el-button type="primary" @click="submitForm">确定</el-button><el-button @click="dlgCancel">取消</el-button></div>
     </el-dialog>
   </div>
 </template>
@@ -66,9 +66,9 @@ export default {
       deptTree: [],
       form: {},
       rules: {
-        matterName: [{ required: true, message: 'Required', trigger: 'blur' }],
-        category: [{ required: true, message: 'Required', trigger: 'change' }],
-        deptId: [{ required: true, message: 'Required', trigger: 'change' }]
+        matterName: [{ required: true, message: '请输入事项名称', trigger: 'blur' }],
+        category: [{ required: true, message: '请选择分类', trigger: 'change' }],
+        deptId: [{ required: true, message: '请选择责任部门', trigger: 'change' }]
       }
     }
   },
@@ -116,13 +116,13 @@ export default {
     },
     handleAdd() {
       this.blankForm()
-      this.title = 'Add matter'
+      this.title = '新增事项'
       this.open = true
     },
     handleUpdate(row) {
       getMatter(row.matterId).then(res => {
         this.form = res.data || {}
-        this.title = 'Edit matter'
+        this.title = '修改事项'
         this.open = true
       })
     },
@@ -131,15 +131,15 @@ export default {
         if (!ok) return
         const api = this.form.matterId != null ? updateMatter : addMatter
         api(this.form).then(() => {
-          this.$modal.msgSuccess('Saved')
+          this.$modal.msgSuccess('保存成功')
           this.open = false
           this.getList()
         })
       })
     },
     handleDelete(row) {
-      this.$modal.confirm('Delete this matter?').then(() => delMatter(row.matterId)).then(() => {
-        this.$modal.msgSuccess('Deleted')
+      this.$modal.confirm('确定删除该事项吗？').then(() => delMatter(row.matterId)).then(() => {
+        this.$modal.msgSuccess('删除成功')
         this.getList()
       }).catch(() => {})
     }

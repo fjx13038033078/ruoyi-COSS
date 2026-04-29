@@ -1,17 +1,17 @@
 <template>
-  <el-card shadow="never" header="Browse published matters">
+  <el-card shadow="never" header="已发布办事事项">
     <el-form inline size="small" @submit.native.prevent="handleQuery">
-      <el-form-item label="Name"><el-input v-model="queryParams.matterName" clearable placeholder="matter name" style="width:200px"/></el-form-item>
-      <el-form-item><el-button type="primary" @click="handleQuery">Search</el-button></el-form-item>
+      <el-form-item label="名称"><el-input v-model="queryParams.matterName" clearable placeholder="事项名称" style="width:200px"/></el-form-item>
+      <el-form-item><el-button type="primary" @click="handleQuery">查询</el-button></el-form-item>
     </el-form>
     <el-table v-loading="loading" :data="matterList">
-      <el-table-column label="Name" prop="matterName" min-width="220" />
-      <el-table-column label="Category" prop="category" width="130">
+      <el-table-column label="事项名称" prop="matterName" min-width="220" />
+      <el-table-column label="分类" prop="category" width="130">
         <template slot-scope="s"><dict-tag :options="dict.type.comm_matter_category" :value="s.row.category"/></template>
       </el-table-column>
-      <el-table-column label="SLA(days)" prop="expectDays" width="100"/>
-      <el-table-column label="Actions" width="110" align="center">
-        <template slot-scope="s"><el-button type="text" @click="$router.push('/portal/matter-detail/'+s.row.matterId)">Detail</el-button></template>
+      <el-table-column label="承诺时限（天）" prop="expectDays" width="130"/>
+      <el-table-column label="操作" width="110" align="center">
+        <template slot-scope="s"><el-button type="text" @click="$router.push('/portal/matter-detail/'+s.row.matterId)">详情</el-button></template>
       </el-table-column>
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="queryParams.pageNum" :limit.sync="queryParams.pageSize" @pagination="getList"/>

@@ -18,6 +18,9 @@ import com.ruoyi.community.mapper.CommApplyMapper;
 import com.ruoyi.community.mapper.CommMatterMapper;
 import com.ruoyi.community.service.ICommApplyService;
 
+/**
+ * 办件全流程：门户申报、驳回补正重提、工作台审核签收与办结。
+ */
 @Service
 public class CommApplyServiceImpl implements ICommApplyService
 {
@@ -30,6 +33,7 @@ public class CommApplyServiceImpl implements ICommApplyService
     @Autowired
     private CommMatterMapper matterMapper;
 
+    /** {@inheritDoc} */
     @Override
     public CommApply selectCommApplyById(Long applyId, boolean withAttachments)
     {
@@ -41,6 +45,7 @@ public class CommApplyServiceImpl implements ICommApplyService
         return a;
     }
 
+    /** {@inheritDoc} */
     @Override
     public CommApply selectCommApplyForResident(Long applyId, Long userId, boolean withAttachments)
     {
@@ -56,18 +61,21 @@ public class CommApplyServiceImpl implements ICommApplyService
         return a;
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<CommApply> selectCommApplyList(CommApply query)
     {
         return applyMapper.selectCommApplyList(query);
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<CommApply> selectMyApplyList(Long applicantId)
     {
         return applyMapper.selectMyApplyList(applicantId);
     }
 
+    /** 按日序号生成办件单号前缀 COyyyyMMdd。 */
     private String nextApplyNo()
     {
         String day = DateUtils.dateTimeNow("yyyyMMdd");
@@ -76,6 +84,7 @@ public class CommApplyServiceImpl implements ICommApplyService
         return prefix + String.format("%04d", n + 1);
     }
 
+    /** {@inheritDoc} */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int insertPortalSubmit(CommApply apply, List<CommApplyAttachment> attachments)
@@ -83,7 +92,7 @@ public class CommApplyServiceImpl implements ICommApplyService
         CommMatter m = matterMapper.selectCommMatterById(apply.getMatterId());
         if (m == null || !"0".equals(m.getStatus()))
         {
-            throw new ServiceException("Matter not exists or disabled.");
+            throw new ServiceException("所选事项不存在或已停用");
         }
         apply.setApplyNo(nextApplyNo());
         apply.setStatus("0");
@@ -103,6 +112,7 @@ public class CommApplyServiceImpl implements ICommApplyService
         return row;
     }
 
+    /** {@inheritDoc} */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int updateResubmit(Long applyId, Long userId, CommApply payload, List<CommApplyAttachment> attachments)
@@ -110,15 +120,15 @@ public class CommApplyServiceImpl implements ICommApplyService
         CommApply old = applyMapper.selectCommApplyById(applyId);
         if (old == null)
         {
-            throw new ServiceException("Apply not exists.");
+            throw new ServiceException("办件不存在");
         }
         if (!userId.equals(old.getApplicantId()))
         {
-            throw new ServiceException("No permission.");
+            throw new ServiceException("无权操作该办件");
         }
         if (!"1".equals(old.getStatus()))
         {
-            throw new ServiceException("Only rejected apply can resubmit.");
+            throw new ServiceException("仅驳回后的办件可重新提交");
         }
         old.setApplicantName(payload.getApplicantName());
         old.setIdCard(payload.getIdCard());
@@ -128,7 +138,7 @@ public class CommApplyServiceImpl implements ICommApplyService
         CommMatter m = matterMapper.selectCommMatterById(old.getMatterId());
         if (m == null || !"0".equals(m.getStatus()))
         {
-            throw new ServiceException("Matter not exists or disabled.");
+            throw new ServiceException("所选事项不存在或已停用");
         }
         old.setStatus("0");
         old.setRejectReason("");
@@ -149,17 +159,18 @@ public class CommApplyServiceImpl implements ICommApplyService
         return u;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int rejectApply(Long applyId, String reason, Long handlerId, String handlerName)
     {
         CommApply old = applyMapper.selectCommApplyById(applyId);
         if (old == null)
         {
-            throw new ServiceException("Apply not exists.");
+            throw new ServiceException("办件不存在");
         }
         if (!"0".equals(old.getStatus()) && !"2".equals(old.getStatus()))
         {
-            throw new ServiceException("Status not allow reject.");
+            throw new ServiceException("当前状态不允许驳回");
         }
         Date now = DateUtils.getNowDate();
         old.setStatus("1");
@@ -170,17 +181,18 @@ public class CommApplyServiceImpl implements ICommApplyService
         return applyMapper.updateCommApply(old);
     }
 
+    /** {@inheritDoc} */
     @Override
     public int acceptApply(Long applyId, Long handlerId, String handlerName)
     {
         CommApply old = applyMapper.selectCommApplyById(applyId);
         if (old == null)
         {
-            throw new ServiceException("Apply not exists.");
+            throw new ServiceException("办件不存在");
         }
         if (!"0".equals(old.getStatus()))
         {
-            throw new ServiceException("Only pending apply can accept.");
+            throw new ServiceException("仅待签收状态的办件可受理");
         }
         Date now = DateUtils.getNowDate();
         old.setStatus("2");
@@ -191,17 +203,18 @@ public class CommApplyServiceImpl implements ICommApplyService
         return applyMapper.updateCommApply(old);
     }
 
+    /** {@inheritDoc} */
     @Override
     public int finishApply(Long applyId, String opinion, String resultFileUrl, Long handlerId, String handlerName)
     {
         CommApply old = applyMapper.selectCommApplyById(applyId);
         if (old == null)
         {
-            throw new ServiceException("Apply not exists.");
+            throw new ServiceException("办件不存在");
         }
         if (!"2".equals(old.getStatus()))
         {
-            throw new ServiceException("Only processing apply can finish.");
+            throw new ServiceException("仅办理中的办件可办结");
         }
         Date now = DateUtils.getNowDate();
         old.setStatus("3");

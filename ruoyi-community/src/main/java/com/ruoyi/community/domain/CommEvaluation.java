@@ -9,120 +9,44 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-/** comm_evaluation */
+import lombok.Data;
+
+/**
+ * 办件满意度评价，对应表 {@code comm_evaluation}。一案仅能评价一次。
+ */
+@Data
 public class CommEvaluation
 {
+    /** 评价主键 */
     private Long evaluationId;
 
-    @NotNull(message = "applyId required")
+    /** 被评价的办件 ID */
+    @NotNull(message = "办件不能为空")
     private Long applyId;
 
+    /** 评价人用户 ID */
     private Long applicantId;
 
-    @NotNull(message = "score required")
+    /** 星级评分（1～5） */
+    @NotNull(message = "请打分")
     @Min(1)
     @Max(5)
     private Integer score;
 
-    @NotBlank(message = "evaluationLevel required")
+    /** 综合评价等级，字典：comm_evaluation_level */
+    @NotBlank(message = "请选择评价档次")
     private String evaluationLevel;
 
+    /** 评价文字内容（可选） */
     private String content;
 
+    /** 评价时间（列表冗余展示时可由 SQL 回填） */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
+    /** 列表展示用事名称（非必存字段，查询联表冗余） */
     private String matterName;
 
+    /** 列表展示办件编号（冗余） */
     private String applyNo;
-
-    public Long getEvaluationId()
-    {
-        return evaluationId;
-    }
-
-    public void setEvaluationId(Long evaluationId)
-    {
-        this.evaluationId = evaluationId;
-    }
-
-    public Long getApplyId()
-    {
-        return applyId;
-    }
-
-    public void setApplyId(Long applyId)
-    {
-        this.applyId = applyId;
-    }
-
-    public Long getApplicantId()
-    {
-        return applicantId;
-    }
-
-    public void setApplicantId(Long applicantId)
-    {
-        this.applicantId = applicantId;
-    }
-
-    public Integer getScore()
-    {
-        return score;
-    }
-
-    public void setScore(Integer score)
-    {
-        this.score = score;
-    }
-
-    public String getEvaluationLevel()
-    {
-        return evaluationLevel;
-    }
-
-    public void setEvaluationLevel(String evaluationLevel)
-    {
-        this.evaluationLevel = evaluationLevel;
-    }
-
-    public String getContent()
-    {
-        return content;
-    }
-
-    public void setContent(String content)
-    {
-        this.content = content;
-    }
-
-    public Date getCreateTime()
-    {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime)
-    {
-        this.createTime = createTime;
-    }
-
-    public String getMatterName()
-    {
-        return matterName;
-    }
-
-    public void setMatterName(String matterName)
-    {
-        this.matterName = matterName;
-    }
-
-    public String getApplyNo()
-    {
-        return applyNo;
-    }
-
-    public void setApplyNo(String applyNo)
-    {
-        this.applyNo = applyNo;
-    }
 }

@@ -1,17 +1,17 @@
 <template>
-  <el-card shadow="never" header="Submit application">
-    <el-alert title="Fill the form below. Track status under My Applications." type="info" :closable="false" show-icon style="margin-bottom:12px"/>
+  <el-card shadow="never" header="在线提交申办">
+    <el-alert title="填报下方表单；进度请在「我的办件」中查看。" type="info" :closable="false" show-icon style="margin-bottom:12px"/>
     <el-form ref="form" :model="form" :rules="rules" label-width="120px" style="max-width:620px">
-      <el-form-item label="Matter" prop="matterId">
-        <el-select v-model="form.matterId" filterable placeholder="Select matter" style="width:100%">
+      <el-form-item label="办事事项" prop="matterId">
+        <el-select v-model="form.matterId" filterable placeholder="请选择事项" style="width:100%">
           <el-option v-for="r in matters" :key="r.matterId" :label="r.matterName" :value="r.matterId"/>
         </el-select>
       </el-form-item>
-      <el-form-item label="Name" prop="applicantName"><el-input v-model="form.applicantName"/></el-form-item>
-      <el-form-item label="Mobile" prop="phone"><el-input v-model="form.phone" maxlength="11"/></el-form-item>
-      <el-form-item label="ID card"><el-input v-model="form.idCard"/></el-form-item>
-      <el-form-item label="Remark"><el-input v-model="form.applyRemark" type="textarea" rows="4"/></el-form-item>
-      <el-form-item><el-button type="primary" :loading="saving" @click="submit">Submit</el-button></el-form-item>
+      <el-form-item label="姓名" prop="applicantName"><el-input v-model="form.applicantName"/></el-form-item>
+      <el-form-item label="手机" prop="phone"><el-input v-model="form.phone" maxlength="11"/></el-form-item>
+      <el-form-item label="身份证号"><el-input v-model="form.idCard"/></el-form-item>
+      <el-form-item label="备注说明"><el-input v-model="form.applyRemark" type="textarea" rows="4"/></el-form-item>
+      <el-form-item><el-button type="primary" :loading="saving" @click="submit">提交申办</el-button></el-form-item>
     </el-form>
   </el-card>
 </template>
@@ -28,11 +28,11 @@ export default {
       saving: false,
       form: { matterId: undefined, applicantName: '', phone: '', idCard: '', applyRemark: '', attachmentList: [] },
       rules: {
-        matterId: [{ required: true, message: 'Required', trigger: 'change' }],
-        applicantName: [{ required: true, message: 'Required', trigger: 'blur' }],
+        matterId: [{ required: true, message: '请选择办事事项', trigger: 'change' }],
+        applicantName: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
         phone: [
-          { required: true, message: 'Required', trigger: 'blur' },
-          { pattern: /^1\d{10}$/, message: 'Invalid phone', trigger: 'blur' }
+          { required: true, message: '请输入手机号码', trigger: 'blur' },
+          { pattern: /^1\d{10}$/, message: '手机号码格式不正确', trigger: 'blur' }
         ]
       }
     }
@@ -59,7 +59,7 @@ export default {
         if (!valid) return
         this.saving = true
         portalSubmitApply(this.form).then(() => {
-          this.$modal.msgSuccess('Submitted')
+          this.$modal.msgSuccess('提交成功')
           this.$router.push('/portal/my-apply')
         }).finally(() => { this.saving = false })
       })

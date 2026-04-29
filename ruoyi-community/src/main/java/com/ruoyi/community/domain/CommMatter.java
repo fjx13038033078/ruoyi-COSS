@@ -2,136 +2,45 @@ package com.ruoyi.community.domain;
 
 import javax.validation.constraints.NotBlank;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-
 import com.ruoyi.common.core.domain.BaseEntity;
 
-/** comm_matter */
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+/**
+ * 社区办事事项，对应数据库表 {@code comm_matter}。
+ */
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class CommMatter extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
+    /** 事项主键 ID */
     private Long matterId;
 
-    @NotBlank(message = "matter name required")
+    /** 事项名称 */
+    @NotBlank(message = "事项名称不能为空")
     private String matterName;
 
-    /** dict: comm_matter_category */
+    /** 事项分类，字典类型：comm_matter_category */
     private String category;
 
-    /** dict: comm_matter_priority */
+    /** 缓急程度，字典类型：comm_matter_priority（如 normal 等） */
     private String priority;
 
+    /** 责任单位部门 ID（sys_dept） */
     private Long deptId;
 
-    /** required proofs list text */
+    /** 办理所需材料与说明文本 */
     private String requiredDocs;
 
+    /** 承诺办结工作日数（SLA） */
     private Integer expectDays;
 
-    /** rich text workflow */
+    /** 办理流程描述（可为富文本 HTML） */
     private String processDesc;
 
-    /** 0 normal 1 disabled */
+    /** 状态：0 正常；1 停用 */
     private String status;
-
-    public Long getMatterId()
-    {
-        return matterId;
-    }
-
-    public void setMatterId(Long matterId)
-    {
-        this.matterId = matterId;
-    }
-
-    public String getMatterName()
-    {
-        return matterName;
-    }
-
-    public void setMatterName(String matterName)
-    {
-        this.matterName = matterName;
-    }
-
-    public String getCategory()
-    {
-        return category;
-    }
-
-    public void setCategory(String category)
-    {
-        this.category = category;
-    }
-
-    public String getPriority()
-    {
-        return priority;
-    }
-
-    public void setPriority(String priority)
-    {
-        this.priority = priority;
-    }
-
-    public Long getDeptId()
-    {
-        return deptId;
-    }
-
-    public void setDeptId(Long deptId)
-    {
-        this.deptId = deptId;
-    }
-
-    public String getRequiredDocs()
-    {
-        return requiredDocs;
-    }
-
-    public void setRequiredDocs(String requiredDocs)
-    {
-        this.requiredDocs = requiredDocs;
-    }
-
-    public Integer getExpectDays()
-    {
-        return expectDays;
-    }
-
-    public void setExpectDays(Integer expectDays)
-    {
-        this.expectDays = expectDays;
-    }
-
-    public String getProcessDesc()
-    {
-        return processDesc;
-    }
-
-    public void setProcessDesc(String processDesc)
-    {
-        this.processDesc = processDesc;
-    }
-
-    public String getStatus()
-    {
-        return status;
-    }
-
-    public void setStatus(String status)
-    {
-        this.status = status;
-    }
-
-    @Override
-    public String toString()
-    {
-        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
-                .append("matterId", getMatterId())
-                .append("matterName", getMatterName())
-                .toString();
-    }
 }

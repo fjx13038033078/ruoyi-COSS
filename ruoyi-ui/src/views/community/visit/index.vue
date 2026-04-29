@@ -1,48 +1,48 @@
 <template>
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" :model="queryParams" inline size="small">
-      <el-form-item label="Name"><el-input v-model="queryParams.applicantName" clearable placeholder="resident name"/></el-form-item>
-      <el-form-item label="Status">
-        <el-select v-model="queryParams.status" clearable placeholder="All">
-          <el-option label="Pending" value="0"/>
-          <el-option label="Accepted" value="1"/>
-          <el-option label="Done" value="2"/>
+      <el-form-item label="姓名"><el-input v-model="queryParams.applicantName" clearable placeholder="申请人姓名"/></el-form-item>
+      <el-form-item label="状态">
+        <el-select v-model="queryParams.status" clearable placeholder="全部">
+          <el-option label="待接单" value="0"/>
+          <el-option label="办理中" value="1"/>
+          <el-option label="已完成" value="2"/>
         </el-select>
       </el-form-item>
-      <el-form-item><el-button type="primary" icon="el-icon-search" @click="handleQuery">Search</el-button><el-button icon="el-icon-refresh" @click="resetQuery">Reset</el-button></el-form-item>
+      <el-form-item><el-button type="primary" icon="el-icon-search" @click="handleQuery">搜索</el-button><el-button icon="el-icon-refresh" @click="resetQuery">重置</el-button></el-form-item>
     </el-form>
     <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     <el-table v-loading="loading" :data="dataList">
-      <el-table-column label="ID" prop="visitId" width="80"/>
-      <el-table-column label="Name" prop="applicantName" width="110"/>
-      <el-table-column label="Phone" prop="phone" width="120"/>
-      <el-table-column label="Address" prop="address" min-width="180" show-overflow-tooltip/>
-      <el-table-column label="Expected" prop="expectedTime" width="165"/>
-      <el-table-column label="Status" width="110">
+      <el-table-column label="编号" prop="visitId" width="80"/>
+      <el-table-column label="姓名" prop="applicantName" width="110"/>
+      <el-table-column label="联系电话" prop="phone" width="120"/>
+      <el-table-column label="上门地址" prop="address" min-width="180" show-overflow-tooltip/>
+      <el-table-column label="期望时间" prop="expectedTime" width="165"/>
+      <el-table-column label="状态" width="110">
         <template slot-scope="s">
-          <el-tag v-if="s.row.status==='0'" type="warning">Pending</el-tag>
-          <el-tag v-else-if="s.row.status==='1'" type="primary">Accepted</el-tag>
-          <el-tag v-else-if="s.row.status==='2'" type="success">Done</el-tag>
+          <el-tag v-if="s.row.status==='0'" type="warning">待接单</el-tag>
+          <el-tag v-else-if="s.row.status==='1'" type="primary">办理中</el-tag>
+          <el-tag v-else-if="s.row.status==='2'" type="success">已完成</el-tag>
           <span v-else>{{ s.row.status }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Actions" width="200" fixed="right">
+      <el-table-column label="操作" width="200" fixed="right">
         <template slot-scope="s">
-          <el-button type="text" size="mini" @click="openDetail(s.row)">Detail</el-button>
-          <el-button v-hasPermi="['community:visit:handle']" v-if="s.row.status==='0'" type="text" size="mini" @click="doAccept(s.row)">Accept</el-button>
-          <el-button v-hasPermi="['community:visit:handle']" v-if="s.row.status==='1'" type="text" size="mini" @click="doComplete(s.row)">Complete</el-button>
+          <el-button type="text" size="mini" @click="openDetail(s.row)">详情</el-button>
+          <el-button v-hasPermi="['community:visit:handle']" v-if="s.row.status==='0'" type="text" size="mini" @click="doAccept(s.row)">接单</el-button>
+          <el-button v-hasPermi="['community:visit:handle']" v-if="s.row.status==='1'" type="text" size="mini" @click="doComplete(s.row)">办结</el-button>
         </template>
       </el-table-column>
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="queryParams.pageNum" :limit.sync="queryParams.pageSize" @pagination="getList"/>
 
-    <el-dialog title="Visit detail" :visible.sync="dlg" width="600px" append-to-body>
+    <el-dialog title="上门预约详情" :visible.sync="dlg" width="600px" append-to-body>
       <pre v-if="current" style="white-space:pre-wrap;font-family:inherit">{{ summaryText }}</pre>
     </el-dialog>
 
-    <el-dialog title="Complete visit" :visible.sync="compDlg" width="480px" append-to-body>
-      <el-form><el-form-item label="Summary"><el-input v-model="summaryTxt" type="textarea" rows="4"/></el-form-item></el-form>
-      <span slot="footer"><el-button @click="compDlg=false">Cancel</el-button><el-button type="primary" @click="submitComplete">OK</el-button></span>
+    <el-dialog title="办结登记" :visible.sync="compDlg" width="480px" append-to-body>
+      <el-form><el-form-item label="办结说明"><el-input v-model="summaryTxt" type="textarea" rows="4"/></el-form-item></el-form>
+      <span slot="footer"><el-button @click="compDlg=false">取消</el-button><el-button type="primary" @click="submitComplete">确定</el-button></span>
     </el-dialog>
   </div>
 </template>
@@ -97,7 +97,7 @@ export default {
     },
     doAccept(row) {
       acceptVisit({ visitId: row.visitId }).then(() => {
-        this.$modal.msgSuccess('Accepted')
+        this.$modal.msgSuccess('接单成功')
         this.getList()
       })
     },
@@ -107,9 +107,9 @@ export default {
       this.compDlg = true
     },
     submitComplete() {
-      if (!this.summaryTxt) { this.$modal.msgWarning('Enter summary'); return }
+      if (!this.summaryTxt) { this.$modal.msgWarning('请填写办结说明'); return }
       completeVisit({ visitId: this.completeVisitId, summary: this.summaryTxt }).then(() => {
-        this.$modal.msgSuccess('Saved')
+        this.$modal.msgSuccess('已保存')
         this.compDlg = false
         this.getList()
       })

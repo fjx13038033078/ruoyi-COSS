@@ -1,12 +1,12 @@
 <template>
-  <el-card shadow="never" header="Notices (from system notice module)">
+  <el-card shadow="never" header="通知公告（系统公告模块）">
     <el-table v-loading="loading" :data="rows">
-      <el-table-column label="Title" prop="noticeTitle" min-width="220"/>
-      <el-table-column label="Type" prop="noticeType" width="100">
+      <el-table-column label="标题" prop="noticeTitle" min-width="220"/>
+      <el-table-column label="类型" prop="noticeType" width="100">
         <template slot-scope="s"><dict-tag :options="dict.type.sys_notice_type" :value="s.row.noticeType"/></template>
       </el-table-column>
-      <el-table-column label="Time" prop="createTime" width="170"/>
-      <el-table-column label="Content" prop="noticeContent">
+      <el-table-column label="发布时间" prop="createTime" width="170"/>
+      <el-table-column label="内容" prop="noticeContent">
         <template slot-scope="s">
           <div class="html-snippet" v-html="s.row.noticeContent"/>
         </template>

@@ -1,27 +1,27 @@
 <template>
   <div class="portal-shell">
     <header class="portal-header">
-      <div class="portal-brand" @click="$router.push('/portal/home')">Community One-Stop Services</div>
+      <div class="portal-brand" @click="$router.push('/portal/home')">社区一网通办</div>
       <nav class="portal-nav">
-        <router-link to="/portal/home">Home</router-link>
-        <router-link to="/portal/matter">Guides</router-link>
-        <router-link to="/portal/apply">Apply Online</router-link>
-        <router-link to="/portal/my-apply">My Applications</router-link>
-        <router-link to="/portal/visit">Doorstep Visit</router-link>
-        <router-link to="/portal/notice">Notices</router-link>
-        <router-link to="/user/profile">Profile</router-link>
+        <router-link to="/portal/home">首页</router-link>
+        <router-link to="/portal/matter">办事指南</router-link>
+        <router-link to="/portal/apply">在线申报</router-link>
+        <router-link to="/portal/my-apply">我的办件</router-link>
+        <router-link to="/portal/visit">上门服务</router-link>
+        <router-link to="/portal/notice">通知公告</router-link>
+        <router-link to="/user/profile">个人中心</router-link>
       </nav>
       <div class="portal-actions">
-        <el-tooltip content="Larger font for accessibility">
+        <el-tooltip content="无障碍：放大页面字体">
           <el-button size="mini" type="text" @click="$store.dispatch('app/togglePortalLargeFont')">
-            {{ portalLargeFont ? 'Normal' : 'Large font' }}
+            {{ portalLargeFont ? '标准字体' : '大字体' }}
           </el-button>
         </el-tooltip>
         <el-dropdown trigger="click" @command="onUserCommand">
           <span class="portal-user"><img :src="avatar" class="avatar" /> {{ name }}</span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="profile">Profile</el-dropdown-item>
-            <el-dropdown-item command="logout" divided>Logout</el-dropdown-item>
+            <el-dropdown-item command="profile">个人中心</el-dropdown-item>
+            <el-dropdown-item command="logout" divided>退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -29,7 +29,7 @@
     <main class="portal-main">
       <router-view />
     </main>
-    <footer class="portal-footer">Demo service for graduation project</footer>
+    <footer class="portal-footer">毕设演示——社区一网通办</footer>
   </div>
 </template>
 
@@ -49,7 +49,7 @@ export default {
       if (cmd === 'profile') {
         this.$router.push('/user/profile')
       } else if (cmd === 'logout') {
-        this.$confirm('Sign out?', 'Tip', { type: 'warning' })
+        this.$confirm('确定退出登录吗？', '提示', { type: 'warning' })
           .then(() => this.$store.dispatch('LogOut'))
           .then(() => { location.href = '/login' })
       }

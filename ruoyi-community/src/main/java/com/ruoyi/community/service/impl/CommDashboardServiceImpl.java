@@ -16,7 +16,7 @@ import com.ruoyi.community.mapper.CommEvaluationMapper;
 import com.ruoyi.community.service.ICommDashboardService;
 
 /**
- * Aggregate dashboard KPI, matter hotspots and daily application trends.
+ * 社区一网通数据看板：汇总 KPI、事项热度柱状图与日办件趋势线。
  */
 @Service
 public class CommDashboardServiceImpl implements ICommDashboardService
@@ -30,6 +30,7 @@ public class CommDashboardServiceImpl implements ICommDashboardService
     @Autowired
     private CommEvaluationMapper evaluationMapper;
 
+    /** {@inheritDoc} */
     @Override
     public Map<String, Object> loadStatistics(int matterHotLimit, int trendDays)
     {
