@@ -24,21 +24,35 @@
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="queryParams.pageNum" :limit.sync="queryParams.pageSize" @pagination="getList"/>
 
-    <el-dialog title="申办详情" :visible.sync="detailVisible" width="720px" append-to-body @closed="detail=null">
+    <el-dialog title="申办详情" :visible.sync="detailVisible" width="720px" append-to-body custom-class="comm-apply-detail-dialog" @closed="detail=null">
       <div v-if="detail">
-        <p><dict-tag :options="dict.type.comm_apply_status" :value="detail.status"/></p>
-        <el-descriptions :column="2" border size="small">
+        <div class="comm-apply-detail-status">
+          <dict-tag :options="dict.type.comm_apply_status" :value="detail.status"/>
+        </div>
+        <el-descriptions :column="2" border size="small" class="apply-desc">
           <el-descriptions-item label="办件编号">{{ detail.applyNo }}</el-descriptions-item>
           <el-descriptions-item label="办事事项">{{ detail.matterName }}</el-descriptions-item>
           <el-descriptions-item label="姓名">{{ detail.applicantName }}</el-descriptions-item>
           <el-descriptions-item label="电话">{{ detail.phone }}</el-descriptions-item>
           <el-descriptions-item label="备注说明" :span="2">{{ detail.applyRemark || '-' }}</el-descriptions-item>
           <el-descriptions-item label="驳回原因" :span="2" v-if="detail.rejectReason">{{ detail.rejectReason }}</el-descriptions-item>
-          <el-descriptions-item label="意见" :span="2" v-if="detail.opinion">{{ detail.opinion }}</el-descriptions-item>
+          <el-descriptions-item label="办结意见" :span="2" v-if="detail.opinion">{{ detail.opinion }}</el-descriptions-item>
+          <el-descriptions-item label="办结结果文件" :span="2" v-if="detail.status === '3'">
+            <template v-if="splitResultUrls(detail.resultFileUrl).length">
+              <ul class="result-file-list">
+                <li v-for="(url, idx) in splitResultUrls(detail.resultFileUrl)" :key="idx">
+                  <el-link type="primary" :href="base + url" target="_blank" :underline="false">
+                    <i class="el-icon-document"/> {{ fileNameFromPath(url) }}
+                  </el-link>
+                </li>
+              </ul>
+            </template>
+            <span v-else class="text-muted">暂无上传</span>
+          </el-descriptions-item>
         </el-descriptions>
-        <div v-if="detail.attachmentList && detail.attachmentList.length" style="margin-top:12px">
-          <div style="margin-bottom:6px">附件列表</div>
-          <el-tag v-for="a in detail.attachmentList" :key="a.id||a.fileUrl" style="margin:4px">
+        <div v-if="detail.attachmentList && detail.attachmentList.length" class="apply-attach-block">
+          <div class="block-label">申请材料</div>
+          <el-tag v-for="a in detail.attachmentList" :key="a.id||a.fileUrl" class="attach-tag" size="small">
             <a :href="base+a.fileUrl" target="_blank">{{ a.fileName || '文件' }}</a>
           </el-tag>
         </div>
@@ -50,9 +64,23 @@
       <span slot="footer"><el-button @click="rejVisible=false">取消</el-button><el-button type="primary" @click="confirmReject">确定</el-button></span>
     </el-dialog>
 
-    <el-dialog title="办结归档" :visible.sync="finVisible" width="520px" append-to-body @closed="finishRow=null">
-      <el-form label-width="120px"><el-form-item label="办结意见"><el-input v-model="finishOpinion" type="textarea" rows="3"/></el-form-item>
-      <el-form-item label="结果文件路径"><el-input v-model="resultFileUrl" placeholder="相对路径，与上传组件一致"/></el-form-item></el-form>
+    <el-dialog title="办结归档" :visible.sync="finVisible" width="620px" append-to-body @closed="finishRow=null">
+      <el-form label-width="120px">
+        <el-form-item label="办结意见">
+          <el-input v-model="finishOpinion" type="textarea" rows="3" placeholder="选填"/>
+        </el-form-item>
+        <el-form-item label="结果文件">
+          <file-upload
+            v-model="resultFileUrl"
+            :limit="5"
+            :file-size="15"
+            :file-type="resultFileTypes"
+          />
+          <div class="el-upload__tip" style="line-height:1.5;margin-top:4px;color:#909399;font-size:12px">
+            上传办结文书或扫描件（与系统统一上传一致），可为空；多文件将按顺序保存。
+          </div>
+        </el-form-item>
+      </el-form>
       <span slot="footer"><el-button @click="finVisible=false">取消</el-button><el-button type="primary" @click="confirmFinish">确定</el-button></span>
     </el-dialog>
   </div>
@@ -79,7 +107,9 @@ export default {
       finVisible: false,
       finishRow: null,
       finishOpinion: '',
-      resultFileUrl: ''
+      /** 若依 FileUpload：逗号分隔相对路径，与 /common/upload 返回一致 */
+      resultFileUrl: '',
+      resultFileTypes: ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'txt', 'jpg', 'jpeg', 'png', 'gif', 'zip', 'rar']
     }
   },
   computed: {
@@ -127,11 +157,21 @@ export default {
       this.resultFileUrl = ''
       this.finVisible = true
     },
+    splitResultUrls(str) {
+      if (!str) return []
+      return String(str).split(',').map(s => s.trim()).filter(Boolean)
+    },
+    fileNameFromPath(path) {
+      if (!path) return '文件'
+      const p = String(path).trim()
+      const i = p.lastIndexOf('/')
+      return i >= 0 ? p.slice(i + 1) : p
+    },
     confirmFinish() {
       finishApply({
         applyId: this.finishRow.applyId,
         opinion: this.finishOpinion,
-        resultFileUrl: this.resultFileUrl
+        resultFileUrl: (this.resultFileUrl || '').trim()
       }).then(() => {
         this.$modal.msgSuccess('办结成功')
         this.finVisible = false
@@ -141,3 +181,20 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.apply-desc { margin-bottom: 0; }
+.apply-attach-block { margin-top: 14px; padding-top: 12px; border-top: 1px solid #ebeef5; }
+.block-label { font-weight: 600; margin-bottom: 8px; color: #606266; }
+.attach-tag { margin: 4px 8px 4px 0; }
+.attach-tag a { color: inherit; text-decoration: none; }
+.attach-tag a:hover { color: #409eff; text-decoration: underline; }
+.result-file-list { margin: 0; padding-left: 18px; color: #606266; line-height: 1.85; }
+.text-muted { color: #909399; font-size: 13px; }
+</style>
+<style>
+/* 状态标签在正文首行，避免与标题栏挤在一起、消除标题下大块空白 */
+.comm-apply-detail-dialog .comm-apply-detail-status {
+  margin: 0 0 14px;
+}
+</style>

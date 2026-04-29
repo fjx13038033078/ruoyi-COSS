@@ -18,15 +18,32 @@
       </el-table>
     </el-card>
 
-    <el-dialog title="办理详情" :visible.sync="detailOpen" width="640px" append-to-body>
-      <div v-if="detail">
-        <p><b>编号</b> {{ detail.applyNo }} <dict-tag style="margin-left:8px" :options="dict.type.comm_apply_status" :value="detail.status"/></p>
+    <el-dialog title="办理详情" :visible.sync="detailOpen" width="680px" append-to-body custom-class="portal-my-apply-detail-dialog" @closed="detail=null">
+      <div v-if="detail" class="portal-detail-body">
+        <div class="portal-detail-status">
+          <dict-tag :options="dict.type.comm_apply_status" :value="detail.status"/>
+        </div>
+        <p><b>编号：</b> {{ detail.applyNo }}</p>
         <p><b>事项：</b> {{ detail.matterName }}</p>
         <p><b>姓名 / 电话：</b> {{ detail.applicantName }} / {{ detail.phone }}</p>
         <p><b>身份证号：</b> {{ detail.idCard || '-' }}</p>
         <p v-if="detail.applyRemark"><b>申请说明：</b> {{ detail.applyRemark }}</p>
         <p v-if="detail.rejectReason"><b>驳回原因：</b> {{ detail.rejectReason }}</p>
         <p v-if="detail.opinion"><b>办结意见：</b> {{ detail.opinion }}</p>
+        <div v-if="detail.status === '3' && resultFinishUrls.length" class="attach-block">
+          <p><b>办结结果文件</b></p>
+          <ul class="attach-ul">
+            <li v-for="(url, idx) in resultFinishUrls" :key="'r'+idx">
+              <el-link :href="fileLink(url)" type="primary" target="_blank" :underline="false">
+                <i class="el-icon-document"/> {{ fileBasename(url) }}
+              </el-link>
+            </li>
+          </ul>
+        </div>
+        <div v-else-if="detail.status === '3'" class="attach-block muted-line">
+          <p><b>办结结果文件</b></p>
+          <p class="muted-tip">暂无上传</p>
+        </div>
         <div v-if="detail.attachmentList && detail.attachmentList.length" class="attach-block">
           <p><b>申请材料</b></p>
           <ul class="attach-ul">
@@ -136,12 +153,25 @@ export default {
       evForm: { score: 5, evaluationLevel: '', content: '' }
     }
   },
+  computed: {
+    /** 已办结时，结果文件相对路径拆成列表用于展示 */
+    resultFinishUrls() {
+      if (!this.detail || !this.detail.resultFileUrl) return []
+      return String(this.detail.resultFileUrl).split(',').map(s => s.trim()).filter(Boolean)
+    }
+  },
   created() { this.loadList() },
   methods: {
     fileLink(url) {
       if (!url) return ''
       if (/^https?:\/\//i.test(url)) return url
       return this.baseApi + url
+    },
+    fileBasename(url) {
+      if (!url) return '文件'
+      const p = String(url).trim()
+      const i = p.lastIndexOf('/')
+      return i >= 0 ? p.slice(i + 1) : p
     },
     buildAttachmentList(urlStr) {
       if (!urlStr || !String(urlStr).trim()) return []
@@ -231,7 +261,10 @@ export default {
 </script>
 
 <style scoped>
+.portal-detail-body { margin-top: -4px; }
+.portal-detail-status { margin-bottom: 14px; }
 .attach-block { margin-top: 10px }
 .attach-ul { margin: 4px 0 0 18px; padding: 0; color: #606266 }
 .attach-ul li { margin-bottom: 4px }
+.muted-line .muted-tip { margin: 6px 0 0; color: #909399; font-size: 13px }
 </style>
