@@ -23,34 +23,30 @@
       </el-col>
     </el-row>
 
-    <!-- 系统介绍 + 操作提示 -->
-    <el-row :gutter="16" class="intro-row">
-      <el-col :xs="24" :lg="16">
-        <el-card shadow="hover" class="intro-card">
-          <div slot="header" class="card-header-slot">
-            <span class="card-header-text"><i class="el-icon-reading"/> 系统功能概况</span>
-          </div>
-          <ul class="intro-list">
-            <li><strong>基础能力</strong>：集成若依用户、角色、菜单、字典、日志与定时任务等企业级通用能力。</li>
-            <li><strong>社区业务</strong>：政务事项上架、在线申办全流程、上门服务预约与满意度评价等业务闭环。</li>
-            <li><strong>数据决策</strong>：提供申办事项热度与按日趋势的统计视图，便于社区治理与汇报展示。</li>
-            <li><strong>多端协同</strong>：居民门户（群众端）与后台管理共用服务接口，分流展示、统一鉴权。</li>
-          </ul>
-        </el-card>
-      </el-col>
-      <el-col :xs="24" :lg="8">
-        <el-card shadow="hover" class="hint-card">
-          <div slot="header" class="card-header-slot">
-            <span class="card-header-text"><i class="el-icon-files"/> 使用提示</span>
-          </div>
-          <ol class="hint-list">
-            <li>请通过左侧菜单访问各业务模块；无权限时请由管理员授权。</li>
-            <li>群众端路由为单独布局，建议使用「群众门户」在新页签预览展示效果。</li>
-            <li>配置与字典请先于「系统管理」中维护，再在社区业务中使用。</li>
-          </ol>
-        </el-card>
-      </el-col>
-    </el-row>
+    <!-- 系统介绍 + 操作提示（Grid 等高，与原先 lg 16:8 比例一致） -->
+    <div class="intro-cards-grid">
+      <el-card shadow="hover" class="intro-card intro-hint-equal">
+        <div slot="header" class="card-header-slot">
+          <span class="card-header-text"><i class="el-icon-reading"/> 系统功能概况</span>
+        </div>
+        <ul class="intro-list">
+          <li><strong>基础能力</strong>：集成若依用户、角色、菜单、字典、日志与定时任务等企业级通用能力。</li>
+          <li><strong>社区业务</strong>：政务事项上架、在线申办全流程、上门服务预约与满意度评价等业务闭环。</li>
+          <li><strong>数据决策</strong>：提供申办事项热度与按日趋势的统计视图，便于社区治理与汇报展示。</li>
+          <li><strong>多端协同</strong>：居民门户（群众端）与后台管理共用服务接口，分流展示、统一鉴权。</li>
+        </ul>
+      </el-card>
+      <el-card shadow="hover" class="hint-card intro-hint-equal">
+        <div slot="header" class="card-header-slot">
+          <span class="card-header-text"><i class="el-icon-files"/> 使用提示</span>
+        </div>
+        <ol class="hint-list">
+          <li>请通过左侧菜单访问各业务模块；无权限时请由管理员授权。</li>
+          <li>群众端路由为单独布局，建议使用「群众门户」在新页签预览展示效果。</li>
+          <li>配置与字典请先于「系统管理」中维护，再在社区业务中使用。</li>
+        </ol>
+      </el-card>
+    </div>
 
     <!-- 下方：公告与轮播 -->
     <el-row :gutter="16" class="bottom-row">
@@ -325,8 +321,67 @@ $primary: #409eff;
   line-height: 1.45;
 }
 
-.intro-row {
-  margin-bottom: 20px !important;
+/* 横向两列时用 flex stretch 对齐底边（断点与 Element lg=1200px 一致） */
+.intro-cards-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 16px;
+  margin-bottom: 20px;
+
+  .intro-card,
+  .hint-card {
+    margin: 0;
+    min-width: 0;
+  }
+
+  /* 与 Element `lg`（1200px）、原 el-col lg 16:8 一致 */
+  @media (max-width: 1199px) {
+    flex-direction: column;
+
+    .intro-card,
+    .hint-card {
+      flex: none;
+      width: 100%;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    flex-wrap: nowrap;
+
+    .intro-card {
+      flex: 2 1 0%;
+    }
+
+    .hint-card {
+      flex: 1 1 0%;
+    }
+  }
+}
+
+.intro-hint-equal {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  height: auto;
+  min-height: 0;
+
+  ::v-deep .el-card__header {
+    flex-shrink: 0;
+  }
+
+  ::v-deep .el-card__body {
+    flex: 1 1 auto;
+    box-sizing: border-box;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+
+    .intro-list,
+    .hint-list {
+      flex: 1 1 auto;
+    }
+  }
 }
 
 .intro-list,

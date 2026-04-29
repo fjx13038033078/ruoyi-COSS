@@ -29,7 +29,7 @@
     <main class="portal-main">
       <router-view />
     </main>
-    <footer class="portal-footer">毕设演示——社区一网通办</footer>
+    <footer class="portal-footer">社区一网通办</footer>
   </div>
 </template>
 
