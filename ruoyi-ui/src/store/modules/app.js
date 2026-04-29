@@ -7,7 +7,8 @@ const state = {
     hide: false
   },
   device: 'desktop',
-  size: Cookies.get('size') || 'medium'
+  size: Cookies.get('size') || 'medium',
+  portalLargeFont: Cookies.get('portalLargeFont') === '1'
 }
 
 const mutations = {
@@ -37,6 +38,10 @@ const mutations = {
   },
   SET_SIDEBAR_HIDE: (state, status) => {
     state.sidebar.hide = status
+  },
+  SET_PORTAL_LARGE_FONT: (state, on) => {
+    state.portalLargeFont = on
+    Cookies.set('portalLargeFont', on ? '1' : '0')
   }
 }
 
@@ -55,6 +60,9 @@ const actions = {
   },
   toggleSideBarHide({ commit }, status) {
     commit('SET_SIDEBAR_HIDE', status)
+  },
+  togglePortalLargeFont({ commit, state }) {
+    commit('SET_PORTAL_LARGE_FONT', !state.portalLargeFont)
   }
 }
 

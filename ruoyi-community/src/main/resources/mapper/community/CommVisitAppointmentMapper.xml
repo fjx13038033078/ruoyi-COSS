@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.community.mapper.CommVisitAppointmentMapper">
+
+    <resultMap id="VisitResult" type="CommVisitAppointment">
+        <result property="visitId" column="visit_id"/>
+        <result property="applicantId" column="applicant_id"/>
+        <result property="applicantName" column="applicant_name"/>
+        <result property="phone" column="phone"/>
+        <result property="address" column="address"/>
+        <result property="matterDesc" column="matter_desc"/>
+        <result property="expectedTime" column="expected_time"/>
+        <result property="status" column="status"/>
+        <result property="handlerId" column="handler_id"/>
+        <result property="handlerName" column="handler_name"/>
+        <result property="summary" column="summary"/>
+        <result property="createTime" column="create_time"/>
+        <result property="finishTime" column="finish_time"/>
+    </resultMap>
+
+    <select id="selectByVisitId" resultMap="VisitResult">
+        select visit_id, applicant_id, applicant_name, phone, address, matter_desc, expected_time,
+               status, handler_id, handler_name, summary, create_time, finish_time
+        from comm_visit_appointment
+        where visit_id = #{visitId}
+    </select>
+
+    <select id="selectVisitList" resultMap="VisitResult">
+        select visit_id, applicant_id, applicant_name, phone, address, matter_desc, expected_time,
+               status, handler_id, handler_name, summary, create_time, finish_time
+        from comm_visit_appointment
+        <where>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+            <if test="applicantName != null and applicantName != ''">
+                and applicant_name like concat('%', #{applicantName}, '%')
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectMyVisits" resultMap="VisitResult">
+        select visit_id, applicant_id, applicant_name, phone, address, matter_desc, expected_time,
+               status, handler_id, handler_name, summary, create_time, finish_time
+        from comm_visit_appointment
+        where applicant_id = #{applicantId}
+        order by create_time desc
+    </select>
+
+    <insert id="insertVisit" parameterType="CommVisitAppointment" useGeneratedKeys="true" keyProperty="visitId">
+        insert into comm_visit_appointment (
+            applicant_id, applicant_name, phone, address, matter_desc,
+            expected_time, status, create_time)
+        values (
+                   #{applicantId}, #{applicantName}, #{phone}, #{address}, #{matterDesc},
+                   #{expectedTime}, '0', sysdate())
+    </insert>
+
+    <update id="updateVisit" parameterType="CommVisitAppointment">
+        update comm_visit_appointment
+        <set>
+            <if test="status != null">status = #{status},</if>
+            <if test="handlerId != null">handler_id = #{handlerId},</if>
+            <if test="handlerName != null">handler_name = #{handlerName},</if>
+            <if test="summary != null">summary = #{summary},</if>
+            <if test="finishTime != null">finish_time = #{finishTime},</if>
+        </set>
+        where visit_id = #{visitId}
+    </update>
+</mapper>

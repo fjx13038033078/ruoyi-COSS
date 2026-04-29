@@ -30,8 +30,25 @@ const permission = {
   },
   actions: {
     // 生成路由
-    GenerateRoutes({ commit }) {
+    GenerateRoutes({ commit, rootGetters }) {
       return new Promise(resolve => {
+        const roles = rootGetters.roles || []
+        var portalFront = roles.indexOf('admin') === -1
+          && roles.indexOf('community_staff') === -1
+          && roles.indexOf('resident') !== -1
+        // 社区居民仅访问群众端，不向后端请求后台菜单路由
+        if (portalFront) {
+          const asyncRoutes = filterDynamicRoutes(dynamicRoutes)
+          router.addRoutes(asyncRoutes)
+          const nf = { path: '*', redirect: '/404', hidden: true }
+          router.addRoutes([nf])
+          commit('SET_ROUTES', [nf])
+          commit('SET_SIDEBAR_ROUTERS', [])
+          commit('SET_DEFAULT_ROUTES', [])
+          commit('SET_TOPBAR_ROUTES', [])
+          resolve([nf])
+          return
+        }
         // 向后端请求路由数据
         getRouters().then(res => {
           const sdata = JSON.parse(JSON.stringify(res.data))

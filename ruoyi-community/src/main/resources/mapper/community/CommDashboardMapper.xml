@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.community.mapper.CommDashboardMapper">
+
+    <select id="countAllApply" resultType="int">
+        select count(1) from comm_apply
+    </select>
+
+    <select id="countApplyCreatedAfter" resultType="int">
+        select count(1) from comm_apply where create_time &gt;= #{from}
+    </select>
+
+    <select id="countPendingApply" resultType="int">
+        select count(1) from comm_apply where status in ('0', '2')
+    </select>
+
+    <select id="avgMinutesFromCreateToFinish" resultType="double">
+        select round(
+                       avg(TIMESTAMPDIFF(MINUTE, create_time, finish_time)),
+                       2
+               )
+        from comm_apply
+        where status = '3'
+          and finish_time is not null
+          and create_time is not null
+    </select>
+
+    <select id="dailyNewApplyTrend" resultType="java.util.HashMap">
+        select date_format(create_time, '%Y-%m-%d') as dt,
+               count(1)                           as cnt
+        from comm_apply
+        where create_time >= date_sub(curdate(), interval (#{days} - 1) day)
+        group by date_format(create_time, '%Y-%m-%d')
+        order by dt
+    </select>
+</mapper>

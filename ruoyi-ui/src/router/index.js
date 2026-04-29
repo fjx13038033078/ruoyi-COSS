@@ -87,6 +87,21 @@ export const constantRoutes = [
         meta: { title: '个人中心', icon: 'user' }
       }
     ]
+  },
+  {
+    path: '/portal',
+    component: () => import('@/views/community/portal/layout/index'),
+    hidden: true,
+    redirect: '/portal/home',
+    children: [
+      { path: 'home', name: 'PortalHome', component: () => import('@/views/community/portal/home/index'), meta: { title: '社区首页' } },
+      { path: 'matter', name: 'PortalMatterList', component: () => import('@/views/community/portal/matter/index'), meta: { title: '办事指南' } },
+      { path: 'matter-detail/:matterId(\\d+)', name: 'PortalMatterDetail', component: () => import('@/views/community/portal/matter-detail/index'), meta: { title: '事项详情' } },
+      { path: 'apply', name: 'PortalApply', component: () => import('@/views/community/portal/apply/index'), meta: { title: '在线申办' } },
+      { path: 'my-apply', name: 'PortalMyApply', component: () => import('@/views/community/portal/my-apply/index'), meta: { title: '我的办件' } },
+      { path: 'visit', name: 'PortalVisit', component: () => import('@/views/community/portal/visit/index'), meta: { title: '上门服务' } },
+      { path: 'notice', name: 'PortalNotice', component: () => import('@/views/community/portal/notice/index'), meta: { title: '社区公告' } }
+    ]
   }
 ]
 

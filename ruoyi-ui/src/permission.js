@@ -10,6 +10,19 @@ NProgress.configure({ showSpinner: false })
 
 const whiteList = ['/login', '/register']
 
+function isPortalFrontUser (roles) {
+  if (!roles || roles.length === 0) {
+    return false
+  }
+  if (roles.includes('admin')) {
+    return false
+  }
+  if (roles.includes('community_staff')) {
+    return false
+  }
+  return roles.includes('resident')
+}
+
 router.beforeEach((to, from, next) => {
   NProgress.start()
   if (getToken()) {
@@ -38,6 +51,24 @@ router.beforeEach((to, from, next) => {
             })
           })
       } else {
+        if (isPortalFrontUser(store.getters.roles)) {
+          if (to.path === '/' || to.path === '/index') {
+            next({ path: '/portal/home', replace: true })
+            NProgress.done()
+            return
+          }
+          var allowPortal = to.path.startsWith('/portal')
+          var allowProfile = to.path.startsWith('/user')
+          if (!allowPortal && !allowProfile) {
+            next({ path: '/portal/home', replace: true })
+            NProgress.done()
+            return
+          }
+        } else if (to.path.startsWith('/portal')) {
+          next({ path: '/index', replace: true })
+          NProgress.done()
+          return
+        }
         next()
       }
     }

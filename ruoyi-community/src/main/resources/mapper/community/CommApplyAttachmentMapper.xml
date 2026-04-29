@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.community.mapper.CommApplyAttachmentMapper">
+
+    <resultMap id="AttachResult" type="CommApplyAttachment">
+        <result property="id" column="id"/>
+        <result property="applyId" column="apply_id"/>
+        <result property="fileName" column="file_name"/>
+        <result property="fileUrl" column="file_url"/>
+        <result property="uploadTime" column="upload_time"/>
+    </resultMap>
+
+    <select id="selectByApplyId" resultMap="AttachResult">
+        select id, apply_id, file_name, file_url, upload_time
+        from comm_apply_attachment
+        where apply_id = #{applyId}
+        order by id
+    </select>
+
+    <insert id="insertAttachment" parameterType="CommApplyAttachment" useGeneratedKeys="true" keyProperty="id">
+        insert into comm_apply_attachment (apply_id, file_name, file_url, upload_time)
+        values (#{applyId}, #{fileName}, #{fileUrl}, sysdate())
+    </insert>
+
+    <delete id="deleteByApplyId">
+        delete from comm_apply_attachment where apply_id = #{applyId}
+    </delete>
+</mapper>

@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" :class="{ 'portal-font-lg': portalLargeFont }">
     <router-view />
     <theme-picker />
   </div>
@@ -11,6 +11,11 @@ import ThemePicker from "@/components/ThemePicker";
 export default {
   name: "App",
   components: { ThemePicker },
+  computed: {
+    portalLargeFont() {
+      return this.$store.getters.portalLargeFont
+    }
+  },
   metaInfo() {
     return {
       title: this.$store.state.settings.dynamicTitle && this.$store.state.settings.title,
@@ -24,5 +29,10 @@ export default {
 <style scoped>
 #app .theme-picker {
   display: none;
+}
+</style>
+<style>
+.portal-font-lg {
+  font-size: 118%;
 }
 </style>

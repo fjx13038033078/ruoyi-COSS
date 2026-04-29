@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.community.mapper.CommEvaluationMapper">
+
+    <resultMap id="EvalResult" type="CommEvaluation">
+        <result property="evaluationId" column="evaluation_id"/>
+        <result property="applyId" column="apply_id"/>
+        <result property="applicantId" column="applicant_id"/>
+        <result property="score" column="score"/>
+        <result property="evaluationLevel" column="evaluation_level"/>
+        <result property="content" column="content"/>
+        <result property="createTime" column="create_time"/>
+        <result property="matterName" column="matter_name"/>
+        <result property="applyNo" column="apply_no"/>
+    </resultMap>
+
+    <select id="selectByApplyId" resultMap="EvalResult">
+        select e.evaluation_id,
+               e.apply_id,
+               e.applicant_id,
+               e.score,
+               e.evaluation_level,
+               e.content,
+               e.create_time
+        from comm_evaluation e
+        where e.apply_id = #{applyId}
+    </select>
+
+    <select id="selectEvaluationList" resultMap="EvalResult">
+        select e.evaluation_id,
+               e.apply_id,
+               e.applicant_id,
+               e.score,
+               e.evaluation_level,
+               e.content,
+               e.create_time,
+               m.matter_name,
+               a.apply_no
+        from comm_evaluation e
+                 join comm_apply a on e.apply_id = a.apply_id
+                 left join comm_matter m on a.matter_id = m.matter_id
+        <where>
+            <if test="applyNo != null and applyNo != ''">
+                and a.apply_no like concat('%', #{applyNo}, '%')
+            </if>
+            <if test="evaluationLevel != null and evaluationLevel != ''">
+                and e.evaluation_level = #{evaluationLevel}
+            </if>
+        </where>
+        order by e.create_time desc
+    </select>
+
+    <insert id="insertEvaluation" parameterType="CommEvaluation" useGeneratedKeys="true" keyProperty="evaluationId">
+        insert into comm_evaluation (apply_id, applicant_id, score, evaluation_level, content, create_time)
+        values (#{applyId}, #{applicantId}, #{score}, #{evaluationLevel}, #{content}, sysdate())
+    </insert>
+
+    <select id="selectAvgScore" resultType="double">
+        select round(avg(score), 2)
+        from comm_evaluation
+    </select>
+</mapper>

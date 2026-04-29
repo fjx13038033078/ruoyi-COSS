@@ -49,6 +49,12 @@
             <artifactId>ruoyi-framework</artifactId>
         </dependency>
 
+        <!-- 社区一网通办业务模块-->
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-community</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

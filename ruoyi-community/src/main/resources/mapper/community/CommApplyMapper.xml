@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.community.mapper.CommApplyMapper">
+
+    <resultMap id="CommApplyResult" type="CommApply">
+        <result property="applyId" column="apply_id"/>
+        <result property="applyNo" column="apply_no"/>
+        <result property="matterId" column="matter_id"/>
+        <result property="matterName" column="matter_name"/>
+        <result property="applicantId" column="applicant_id"/>
+        <result property="applicantName" column="applicant_name"/>
+        <result property="idCard" column="id_card"/>
+        <result property="phone" column="phone"/>
+        <result property="applyRemark" column="apply_remark"/>
+        <result property="status" column="status"/>
+        <result property="rejectReason" column="reject_reason"/>
+        <result property="opinion" column="opinion"/>
+        <result property="resultFileUrl" column="result_file_url"/>
+        <result property="handlerId" column="handler_id"/>
+        <result property="handlerName" column="handler_name"/>
+        <result property="assignTime" column="assign_time"/>
+        <result property="handleTime" column="handle_time"/>
+        <result property="finishTime" column="finish_time"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="applyJoinMatter">
+        select a.apply_id,
+               a.apply_no,
+               a.matter_id,
+               m.matter_name,
+               a.applicant_id,
+               a.applicant_name,
+               a.id_card,
+               a.phone,
+               a.apply_remark,
+               a.status,
+               a.reject_reason,
+               a.opinion,
+               a.result_file_url,
+               a.handler_id,
+               a.handler_name,
+               a.assign_time,
+               a.handle_time,
+               a.finish_time,
+               a.create_time,
+               a.update_time
+        from comm_apply a
+                 left join comm_matter m on a.matter_id = m.matter_id
+    </sql>
+
+    <select id="selectCommApplyById" resultMap="CommApplyResult">
+        <include refid="applyJoinMatter"/>
+        where a.apply_id = #{applyId}
+    </select>
+
+    <select id="selectCommApplyList" resultMap="CommApplyResult">
+        <include refid="applyJoinMatter"/>
+        <where>
+            <if test="applyNo != null and applyNo != ''">
+                AND a.apply_no like concat('%', #{applyNo}, '%')
+            </if>
+            <if test="matterName != null and matterName != ''">
+                AND m.matter_name like concat('%', #{matterName}, '%')
+            </if>
+            <if test="applicantName != null and applicantName != ''">
+                AND a.applicant_name like concat('%', #{applicantName}, '%')
+            </if>
+            <if test="phone != null and phone != ''">
+                AND a.phone like concat('%', #{phone}, '%')
+            </if>
+            <if test="status != null and status != ''">
+                AND a.status = #{status}
+            </if>
+            <if test="params.beginTime != null and params.beginTime != ''">
+                and date_format(a.create_time,'%Y%m%d') &gt;= date_format(#{params.beginTime},'%Y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''">
+                and date_format(a.create_time,'%Y%m%d') &lt;= date_format(#{params.endTime},'%Y%m%d')
+            </if>
+        </where>
+        order by a.create_time desc
+    </select>
+
+    <select id="selectMyApplyList" resultMap="CommApplyResult">
+        <include refid="applyJoinMatter"/>
+        where a.applicant_id = #{applicantId}
+        order by a.create_time desc
+    </select>
+
+    <select id="countApplyNoLike" resultType="int">
+        select count(1)
+        from comm_apply
+        where apply_no like concat(#{prefix}, '%')
+    </select>
+
+    <insert id="insertCommApply" parameterType="CommApply" useGeneratedKeys="true" keyProperty="applyId">
+        insert into comm_apply (apply_no, matter_id, applicant_id, applicant_name, id_card, phone, apply_remark,
+                                status,
+                                create_time, update_time)
+        values (#{applyNo}, #{matterId}, #{applicantId}, #{applicantName}, #{idCard}, #{phone}, #{applyRemark},
+                #{status},
+                sysdate(), sysdate())
+    </insert>
+
+    <update id="updateCommApply" parameterType="CommApply">
+        update comm_apply
+        <set>
+            <if test="matterId != null">matter_id = #{matterId},</if>
+            <if test="applicantName != null">applicant_name = #{applicantName},</if>
+            <if test="idCard != null">id_card = #{idCard},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="applyRemark != null">apply_remark = #{applyRemark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="rejectReason != null">reject_reason = #{rejectReason},</if>
+            <if test="opinion != null">opinion = #{opinion},</if>
+            <if test="resultFileUrl != null">result_file_url = #{resultFileUrl},</if>
+            <if test="handlerId != null">handler_id = #{handlerId},</if>
+            <if test="handlerName != null">handler_name = #{handlerName},</if>
+            <if test="assignTime != null">assign_time = #{assignTime},</if>
+            <if test="handleTime != null">handle_time = #{handleTime},</if>
+            <if test="finishTime != null">finish_time = #{finishTime},</if>
+            update_time = sysdate()
+        </set>
+        where apply_id = #{applyId}
+    </update>
+
+    <select id="countApplyGroupByMatter" resultType="java.util.HashMap">
+        select m.matter_name as label,
+               count(*)       as value
+        from comm_apply a
+                 join comm_matter m on a.matter_id = m.matter_id
+        group by m.matter_id, m.matter_name
+        order by value desc
+            limit #{limit}
+    </select>
+</mapper>
