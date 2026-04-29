@@ -32,6 +32,8 @@
 
     <!-- id="deleteByApplyId" : 重提清空旧附件 -->
     <delete id="deleteByApplyId">
-        delete from comm_apply_attachment where apply_id = #{applyId}
+        delete
+        from comm_apply_attachment
+        where apply_id = #{applyId}
     </delete>
 </mapper>

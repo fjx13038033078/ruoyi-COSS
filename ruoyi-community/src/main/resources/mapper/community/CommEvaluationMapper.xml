@@ -36,17 +36,17 @@
     <!-- id="selectEvaluationList" : 管理端评价分页列表 -->
     <select id="selectEvaluationList" resultMap="EvalResult">
         select e.evaluation_id,
-               e.apply_id,
-               e.applicant_id,
-               e.score,
-               e.evaluation_level,
-               e.content,
-               e.create_time,
-               m.matter_name,
-               a.apply_no
+        e.apply_id,
+        e.applicant_id,
+        e.score,
+        e.evaluation_level,
+        e.content,
+        e.create_time,
+        m.matter_name,
+        a.apply_no
         from comm_evaluation e
-                 join comm_apply a on e.apply_id = a.apply_id
-                 left join comm_matter m on a.matter_id = m.matter_id
+        join comm_apply a on e.apply_id = a.apply_id
+        left join comm_matter m on a.matter_id = m.matter_id
         <where>
             <if test="applyNo != null and applyNo != ''">
                 and a.apply_no like concat('%', #{applyNo}, '%')

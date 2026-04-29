@@ -12,17 +12,22 @@
 
     <!-- id="countAllApply" : KPI 申办总笔数 -->
     <select id="countAllApply" resultType="int">
-        select count(1) from comm_apply
+        select count(1)
+        from comm_apply
     </select>
 
     <!-- id="countApplyCreatedAfter" : 今日新增传入 beginOfDay 作为下限 -->
     <select id="countApplyCreatedAfter" resultType="int">
-        select count(1) from comm_apply where create_time &gt;= #{from}
+        select count(1)
+        from comm_apply
+        where create_time &gt;= #{from}
     </select>
 
     <!-- id="countPendingApply" : 仍为待签收或办理中（与业务枚举一致） -->
     <select id="countPendingApply" resultType="int">
-        select count(1) from comm_apply where status in ('0', '2')
+        select count(1)
+        from comm_apply
+        where status in ('0', '2')
     </select>
 
     <!-- id="avgMinutesFromCreateToFinish" : 已办结办结件平均办结耗时（分钟） -->
@@ -42,7 +47,7 @@
          interval (days - 1) day 包含今天共 days 天窗口 -->
     <select id="dailyNewApplyTrend" resultType="java.util.HashMap">
         select date_format(create_time, '%Y-%m-%d') as dt,
-               count(1)                           as cnt
+               count(1)                             as cnt
         from comm_apply
         where create_time >= date_sub(curdate(), interval (#{days} - 1) day)
         group by date_format(create_time, '%Y-%m-%d')

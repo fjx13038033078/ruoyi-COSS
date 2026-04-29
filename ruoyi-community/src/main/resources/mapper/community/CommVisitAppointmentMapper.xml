@@ -26,8 +26,19 @@
 
     <!-- id="selectByVisitId" -->
     <select id="selectByVisitId" resultMap="VisitResult">
-        select visit_id, applicant_id, applicant_name, phone, address, matter_desc, expected_time,
-               status, handler_id, handler_name, summary, create_time, finish_time
+        select visit_id,
+               applicant_id,
+               applicant_name,
+               phone,
+               address,
+               matter_desc,
+               expected_time,
+               status,
+               handler_id,
+               handler_name,
+               summary,
+               create_time,
+               finish_time
         from comm_visit_appointment
         where visit_id = #{visitId}
     </select>
@@ -35,7 +46,7 @@
     <!-- id="selectVisitList" : 工作台；可选状态 / 联系人模糊 -->
     <select id="selectVisitList" resultMap="VisitResult">
         select visit_id, applicant_id, applicant_name, phone, address, matter_desc, expected_time,
-               status, handler_id, handler_name, summary, create_time, finish_time
+        status, handler_id, handler_name, summary, create_time, finish_time
         from comm_visit_appointment
         <where>
             <if test="status != null and status != ''">
@@ -50,8 +61,19 @@
 
     <!-- id="selectMyVisits" : 门户「我的」按 applicant_id -->
     <select id="selectMyVisits" resultMap="VisitResult">
-        select visit_id, applicant_id, applicant_name, phone, address, matter_desc, expected_time,
-               status, handler_id, handler_name, summary, create_time, finish_time
+        select visit_id,
+               applicant_id,
+               applicant_name,
+               phone,
+               address,
+               matter_desc,
+               expected_time,
+               status,
+               handler_id,
+               handler_name,
+               summary,
+               create_time,
+               finish_time
         from comm_visit_appointment
         where applicant_id = #{applicantId}
         order by create_time desc
@@ -59,12 +81,10 @@
 
     <!-- id="insertVisit" : status 写死 '0' 待接单，回填 visit_id -->
     <insert id="insertVisit" parameterType="CommVisitAppointment" useGeneratedKeys="true" keyProperty="visitId">
-        insert into comm_visit_appointment (
-            applicant_id, applicant_name, phone, address, matter_desc,
-            expected_time, status, create_time)
-        values (
-                   #{applicantId}, #{applicantName}, #{phone}, #{address}, #{matterDesc},
-                   #{expectedTime}, '0', sysdate())
+        insert into comm_visit_appointment (applicant_id, applicant_name, phone, address, matter_desc,
+                                            expected_time, status, create_time)
+        values (#{applicantId}, #{applicantName}, #{phone}, #{address}, #{matterDesc},
+                #{expectedTime}, '0', sysdate())
     </insert>
 
     <!-- id="updateVisit" : 接单/办结动态片段 -->
